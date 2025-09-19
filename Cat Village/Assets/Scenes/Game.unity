@@ -16171,6 +16171,7 @@ GameObject:
   - component: {fileID: 1311977568}
   - component: {fileID: 1311977570}
   - component: {fileID: 1311977571}
+  - component: {fileID: 1311977572}
   m_Layer: 0
   m_Name: Game Manager
   m_TagString: Untagged
@@ -16299,6 +16300,18 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   ItemCollisionPopup2: {fileID: 1969435589}
+--- !u!114 &1311977572
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1311977567}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c844bd08876d7f40b798e92e669a779, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1323446716
 GameObject:
   m_ObjectHideFlags: 0

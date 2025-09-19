@@ -38,6 +38,7 @@ public class UI_CC : MonoBehaviour
     public Texture2D defaultTummyWhiteImage;
     public Texture2D defaultTailWhiteImage;
     public Texture2D defaultUnderTailWhiteImage;
+    public Texture2D defaultSiameseImage;
 
     [Header("Menu2 White Sliders")]
     public Slider wholeBodyWhiteSlider;
@@ -68,6 +69,8 @@ public class UI_CC : MonoBehaviour
     public Texture2D entireTailImage;
     public Texture2D[] entireTailImages; // 4 textures, 0 = blank
 
+    [Header("Menu 1 - Color/Pattern Selection")]
+
     [Header("Fur Color Selection")]
     public Button[] furColorButtons;
     public Color[] furColors;
@@ -79,7 +82,15 @@ public class UI_CC : MonoBehaviour
     [Header("Fur Pattern Selection")]
     public Button[] furPatternButtons;
     public Texture2D[] furPatterns; // Assign textures in inspector
-    public Texture2D defaultFurPattern; // Assign SolidPattern.png in inspector
+    public Texture2D defaultFurPattern; // Assign in inspector
+
+    [Header("Siamese Selection")]
+    public Toggle siameseToggle;
+    public Texture2D siameseImage; // Assign in inspector
+    private bool isSiamese = false;
+
+    [Header ("Clothing Set Blank")]
+    public Texture2D clothingSetBlankImage; // Assign in inspector
 
     [Header("Menus")]
     public GameObject menu1;
@@ -249,6 +260,19 @@ public class UI_CC : MonoBehaviour
             entireTailSlider.onValueChanged.AddListener(OnEntireTailSliderChanged);
         }
 
+        if (siameseToggle != null)
+        {
+            //siameseToggle.isOn = isSiamese;
+            siameseToggle.onValueChanged.AddListener(OnSiameseToggleChanged);
+            // Automatically assign default texture on start
+            if (playerRenderer != null && playerRenderer.material != null && defaultSiameseImage != null)
+            {
+                var mat = playerRenderer.material;
+                if (mat.HasProperty("_SiameseImage"))
+                    mat.SetTexture("_SiameseImage", defaultSiameseImage);
+            }
+        }
+
         // Hide menu2 on load
         if (menu2 != null)
             menu2.SetActive(false);
@@ -267,6 +291,22 @@ public class UI_CC : MonoBehaviour
             playerRenderer = catTransform2.GetComponent<Renderer>();
         else
             playerRenderer = player.GetComponentInChildren<Renderer>(); // fallback
+
+        // Ensure the SiameseImage property is set to defaultSiameseImage on startup
+        if (playerRenderer != null && playerRenderer.material != null)
+        {
+            var mat = playerRenderer.material;
+            if (defaultSiameseImage != null && mat.HasProperty("_SiameseImage"))
+                mat.SetTexture("_SiameseImage", defaultSiameseImage);
+            // Assign clothingSetBlankImage to ClothingTop and ClothingBottom
+            if (clothingSetBlankImage != null)
+            {
+                if (mat.HasProperty("_ClothingTop"))
+                    mat.SetTexture("_ClothingTop", clothingSetBlankImage);
+                if (mat.HasProperty("_ClothingBottom"))
+                    mat.SetTexture("_ClothingBottom", clothingSetBlankImage);
+            }
+        }
 
         // Set initial colors and default fur pattern on the material
         UpdatePlayerColors();
@@ -333,6 +373,19 @@ public class UI_CC : MonoBehaviour
             var mat = playerRenderer.material;
             if (mat.HasProperty(property))
                 mat.SetTexture(property, tex);
+        }
+    }
+
+    void OnSiameseToggleChanged(bool isOn)
+    {
+        isSiamese = isOn;
+        if (playerRenderer != null && playerRenderer.material != null)
+        {
+            var mat = playerRenderer.material;
+            if (mat.HasProperty("_SiameseImage"))
+            {
+                mat.SetTexture("_SiameseImage", isSiamese ? siameseImage : defaultSiameseImage);
+            }
         }
     }
 

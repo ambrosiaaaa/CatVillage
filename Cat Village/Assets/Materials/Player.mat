@@ -24,6 +24,14 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _ClothingBottom:
+        m_Texture: {fileID: 2800000, guid: f1445d17b0280e945a4255550d6c64c4, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ClothingTop:
+        m_Texture: {fileID: 2800000, guid: f1445d17b0280e945a4255550d6c64c4, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _EarWhiteImage:
         m_Texture: {fileID: 2800000, guid: f1445d17b0280e945a4255550d6c64c4, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -50,6 +58,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _SampleTexture2D_fdc7de1a227a4680ab0a0e7da6656ba2_Texture_1_Texture2D:
         m_Texture: {fileID: 2800000, guid: e95e00061980daf41b79f75513895631, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SiameseImage:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _TailWhiteImage:
@@ -86,6 +98,8 @@ Material:
     - _QueueOffset: 0
     m_Colors:
     - _BaseFurColor: {r: 0, g: 0, b: 0, a: 0}
+    - _ClothingBottomColour: {r: 0, g: 0, b: 0, a: 1}
+    - _ClothingTopColour: {r: 0, g: 0, b: 0, a: 1}
     - _EyeColor: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
