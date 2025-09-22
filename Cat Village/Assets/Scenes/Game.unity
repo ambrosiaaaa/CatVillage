@@ -768,6 +768,10 @@ MonoBehaviour:
   slotIndex: 6
   isHovering: 0
   isToolbeltSlot: 0
+  isHatSlot: 0
+  isTopSlot: 0
+  isBottomsSlot: 0
+  playerOutfitter: {fileID: 0}
 --- !u!1 &59331130
 GameObject:
   m_ObjectHideFlags: 0
@@ -959,12 +963,16 @@ MonoBehaviour:
   itemDescription: Good for mining.
   itemIcon: {fileID: 21300000, guid: d41bcacfb9929c342b6bf65cd41346ff, type: 3}
   itemType: Tool
-  itemID: 0
   itemValue: 0
   foodIncreaseAmount: 0
   isTall: 0
   positionOffset: 1.3
   rotationOffset: 90
+  itemColor: {r: 1, g: 1, b: 1, a: 1}
+  itemTexture: {fileID: 0}
+  hatPositionOffset: {x: 0, y: 0, z: 0}
+  hatRotationOffset: {x: 0, y: 0, z: 0, w: 0}
+  hatScale: {x: 1, y: 1, z: 1}
 --- !u!4 &66775877
 Transform:
   m_ObjectHideFlags: 0
@@ -1427,12 +1435,16 @@ MonoBehaviour:
   itemDescription: Wow, so good for testing!
   itemIcon: {fileID: 21300000, guid: d41bcacfb9929c342b6bf65cd41346ff, type: 3}
   itemType: Tool
-  itemID: 3
   itemValue: 0
   foodIncreaseAmount: 0
   isTall: 0
   positionOffset: 0
   rotationOffset: 0
+  itemColor: {r: 1, g: 1, b: 1, a: 1}
+  itemTexture: {fileID: 0}
+  hatPositionOffset: {x: 0, y: 0, z: 0}
+  hatRotationOffset: {x: 0, y: 0, z: 0, w: 0}
+  hatScale: {x: 1, y: 1, z: 1}
 --- !u!65 &99805343
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1677,6 +1689,141 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 103054606}
   m_CullTransparentMesh: 1
+--- !u!1 &107647630
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 107647635}
+  - component: {fileID: 107647634}
+  - component: {fileID: 107647633}
+  - component: {fileID: 107647632}
+  - component: {fileID: 107647631}
+  m_Layer: 0
+  m_Name: TestBottom
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &107647631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 107647630}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54683947610219443aff465b38866815, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemName: Test Bottoms
+  itemDescription: A pair of trousers good for testing!
+  itemIcon: {fileID: 21300000, guid: d5f2d6fa92a7e4d4fb5a36d39fdbdc20, type: 3}
+  itemType: Bottoms
+  itemValue: 0
+  foodIncreaseAmount: 0
+  isTall: 0
+  positionOffset: 0
+  rotationOffset: 0
+  itemColor: {r: 1, g: 0, b: 0.93148184, a: 1}
+  itemTexture: {fileID: 2800000, guid: 1b3f965458b2dcc42ad5e67c57d92e8e, type: 3}
+  hatPositionOffset: {x: 0, y: 0, z: 0}
+  hatRotationOffset: {x: 0, y: 0, z: 0, w: 0}
+  hatScale: {x: 1, y: 1, z: 1}
+--- !u!65 &107647632
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 107647630}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 5, z: 1}
+  m_Center: {x: 0, y: 2, z: 0}
+--- !u!23 &107647633
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 107647630}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &107647634
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 107647630}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!4 &107647635
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 107647630}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 7.187, y: 0.031, z: -16.355}
+  m_LocalScale: {x: 0.12565248, y: 0.061047, z: 0.12565248}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &117401423
 GameObject:
   m_ObjectHideFlags: 0
@@ -1788,12 +1935,16 @@ MonoBehaviour:
   itemDescription: Wow, so good for testing!
   itemIcon: {fileID: 21300000, guid: 0899da402b90ed9469ba6adac4fe3c6b, type: 3}
   itemType: Furniture
-  itemID: 1
   itemValue: 0
   foodIncreaseAmount: 0
   isTall: 0
   positionOffset: 0
   rotationOffset: 0
+  itemColor: {r: 1, g: 1, b: 1, a: 1}
+  itemTexture: {fileID: 0}
+  hatPositionOffset: {x: 0, y: 0, z: 0}
+  hatRotationOffset: {x: 0, y: 0, z: 0, w: 0}
+  hatScale: {x: 1, y: 1, z: 1}
 --- !u!65 &133088904
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3183,6 +3334,10 @@ MonoBehaviour:
   slotIndex: 5
   isHovering: 0
   isToolbeltSlot: 0
+  isHatSlot: 0
+  isTopSlot: 0
+  isBottomsSlot: 0
+  playerOutfitter: {fileID: 0}
 --- !u!1 &261858574
 GameObject:
   m_ObjectHideFlags: 0
@@ -3700,12 +3855,16 @@ MonoBehaviour:
   itemDescription: For cooking food.
   itemIcon: {fileID: 21300000, guid: d41bcacfb9929c342b6bf65cd41346ff, type: 3}
   itemType: Tool
-  itemID: 0
   itemValue: 0
   foodIncreaseAmount: 0
   isTall: 0
   positionOffset: 0.5
   rotationOffset: 0
+  itemColor: {r: 1, g: 1, b: 1, a: 1}
+  itemTexture: {fileID: 0}
+  hatPositionOffset: {x: 0, y: 0, z: 0}
+  hatRotationOffset: {x: 0, y: 0, z: 0, w: 0}
+  hatScale: {x: 1, y: 1, z: 1}
 --- !u!65 &277285429
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3835,6 +3994,10 @@ MonoBehaviour:
   slotIndex: 4
   isHovering: 0
   isToolbeltSlot: 0
+  isHatSlot: 0
+  isTopSlot: 0
+  isBottomsSlot: 0
+  playerOutfitter: {fileID: 0}
 --- !u!1 &298876312
 GameObject:
   m_ObjectHideFlags: 0
@@ -4398,6 +4561,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 5b461d85bf1a843438049c96e0ae0113, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     - target: {fileID: 5828979002318216439, guid: 5b461d85bf1a843438049c96e0ae0113, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -4427,6 +4594,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 5b461d85bf1a843438049c96e0ae0113, type: 3}
       insertIndex: -1
       addedObject: {fileID: 329348382}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 5b461d85bf1a843438049c96e0ae0113, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 329348383}
   m_SourcePrefab: {fileID: 100100000, guid: 5b461d85bf1a843438049c96e0ae0113, type: 3}
 --- !u!1 &329348375 stripped
 GameObject:
@@ -4557,6 +4727,25 @@ MonoBehaviour:
   walkPitch: 0.8
   jogPitch: 1.2
   runPitch: 2
+--- !u!114 &329348383
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 329348375}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c844bd08876d7f40b798e92e669a779, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerMaterial: {fileID: 0}
+  outfitTopTexture: {fileID: 2800000, guid: f1445d17b0280e945a4255550d6c64c4, type: 3}
+  outfitBottomTexture: {fileID: 2800000, guid: f1445d17b0280e945a4255550d6c64c4, type: 3}
+  noTexture: {fileID: 2800000, guid: f1445d17b0280e945a4255550d6c64c4, type: 3}
+  topColor: {r: 1, g: 1, b: 1, a: 1}
+  bottomColor: {r: 1, g: 1, b: 1, a: 1}
+  playerHeadBone: {fileID: 0}
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -4900,12 +5089,16 @@ MonoBehaviour:
   itemDescription: Great for chopping down trees!
   itemIcon: {fileID: 21300000, guid: d41bcacfb9929c342b6bf65cd41346ff, type: 3}
   itemType: Tool
-  itemID: 0
   itemValue: 0
   foodIncreaseAmount: 0
   isTall: 0
   positionOffset: 0.4
   rotationOffset: 90
+  itemColor: {r: 1, g: 1, b: 1, a: 1}
+  itemTexture: {fileID: 0}
+  hatPositionOffset: {x: 0, y: 0, z: 0}
+  hatRotationOffset: {x: 0, y: 0, z: 0, w: 0}
+  hatScale: {x: 1, y: 1, z: 1}
 --- !u!65 &347036664
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5239,6 +5432,10 @@ MonoBehaviour:
   slotIndex: 12
   isHovering: 0
   isToolbeltSlot: 1
+  isHatSlot: 0
+  isTopSlot: 0
+  isBottomsSlot: 0
+  playerOutfitter: {fileID: 0}
 --- !u!1 &371261204
 GameObject:
   m_ObjectHideFlags: 0
@@ -5850,6 +6047,114 @@ MonoBehaviour:
   dayFogColor: {r: 0.376, g: 0.365, b: 0.302, a: 1}
   nightFogColor: {r: 0, g: 0.02, b: 0.067, a: 1}
   fogFadeSpeed: 1
+--- !u!1 &426116421
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 426116422}
+  - component: {fileID: 426116425}
+  - component: {fileID: 426116424}
+  - component: {fileID: 426116423}
+  m_Layer: 0
+  m_Name: TestHat (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &426116422
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 426116421}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.3, z: 0.393}
+  m_LocalScale: {x: 1, y: 0.27024, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 724033722}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &426116423
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 426116421}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!23 &426116424
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 426116421}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 982479c164979a04e84de2714e55a514, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &426116425
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 426116421}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &426200650
 GameObject:
   m_ObjectHideFlags: 0
@@ -7472,12 +7777,16 @@ MonoBehaviour:
   itemDescription: Musical instrument.
   itemIcon: {fileID: 21300000, guid: d41bcacfb9929c342b6bf65cd41346ff, type: 3}
   itemType: Tool
-  itemID: 0
   itemValue: 0
   foodIncreaseAmount: 0
   isTall: 1
   positionOffset: 0.6
   rotationOffset: -55
+  itemColor: {r: 1, g: 1, b: 1, a: 1}
+  itemTexture: {fileID: 0}
+  hatPositionOffset: {x: 0, y: 0, z: 0}
+  hatRotationOffset: {x: 0, y: 0, z: 0, w: 0}
+  hatScale: {x: 1, y: 1, z: 1}
 --- !u!65 &565932495
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -7653,6 +7962,7 @@ GameObject:
   - component: {fileID: 616119591}
   - component: {fileID: 616119593}
   - component: {fileID: 616119592}
+  - component: {fileID: 616119594}
   m_Layer: 5
   m_Name: Head
   m_TagString: Untagged
@@ -7717,6 +8027,26 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 616119590}
   m_CullTransparentMesh: 1
+--- !u!114 &616119594
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 616119590}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d68112c540970a74daea47c742ea2497, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerInventory: {fileID: 0}
+  slotIndex: 16
+  isHovering: 0
+  isToolbeltSlot: 0
+  isHatSlot: 1
+  isTopSlot: 0
+  isBottomsSlot: 0
+  playerOutfitter: {fileID: 0}
 --- !u!1 &629438197
 GameObject:
   m_ObjectHideFlags: 0
@@ -9108,6 +9438,146 @@ MonoBehaviour:
   slotIndex: 8
   isHovering: 0
   isToolbeltSlot: 0
+  isHatSlot: 0
+  isTopSlot: 0
+  isBottomsSlot: 0
+  playerOutfitter: {fileID: 0}
+--- !u!1 &724033717
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 724033722}
+  - component: {fileID: 724033721}
+  - component: {fileID: 724033720}
+  - component: {fileID: 724033719}
+  - component: {fileID: 724033718}
+  m_Layer: 0
+  m_Name: TestHat
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &724033718
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 724033717}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54683947610219443aff465b38866815, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemName: Test Hat
+  itemDescription: A hat good for testing!
+  itemIcon: {fileID: 21300000, guid: 56001718fffbf6841b3df119a876c3ab, type: 3}
+  itemType: Hat
+  itemValue: 0
+  foodIncreaseAmount: 0
+  isTall: 0
+  positionOffset: 0
+  rotationOffset: 0
+  itemColor: {r: 1, g: 1, b: 1, a: 1}
+  itemTexture: {fileID: 0}
+  hatPositionOffset: {x: 0, y: 0.0033, z: 0}
+  hatRotationOffset: {x: 0.015707316, y: 0, z: 0, w: 0.9998766}
+  hatScale: {x: 0.001, y: 0.001, z: 0.001}
+--- !u!65 &724033719
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 724033717}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 5, z: 1}
+  m_Center: {x: 0, y: 2, z: 0}
+--- !u!23 &724033720
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 724033717}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 982479c164979a04e84de2714e55a514, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &724033721
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 724033717}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!4 &724033722
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 724033717}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 7.529, y: 0.031, z: -16.355}
+  m_LocalScale: {x: 0.12565248, y: 0.061047, z: 0.12565248}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 426116422}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &730237289
 GameObject:
   m_ObjectHideFlags: 0
@@ -9819,12 +10289,16 @@ MonoBehaviour:
   itemDescription: Good for catching birds and bugs!
   itemIcon: {fileID: 21300000, guid: d41bcacfb9929c342b6bf65cd41346ff, type: 3}
   itemType: Tool
-  itemID: 0
   itemValue: 0
   foodIncreaseAmount: 0
   isTall: 0
   positionOffset: 1
   rotationOffset: 0
+  itemColor: {r: 1, g: 1, b: 1, a: 1}
+  itemTexture: {fileID: 0}
+  hatPositionOffset: {x: 0, y: 0, z: 0}
+  hatRotationOffset: {x: 0, y: 0, z: 0, w: 0}
+  hatScale: {x: 1, y: 1, z: 1}
 --- !u!4 &775724890
 Transform:
   m_ObjectHideFlags: 0
@@ -9933,6 +10407,10 @@ MonoBehaviour:
   slotIndex: 13
   isHovering: 0
   isToolbeltSlot: 1
+  isHatSlot: 0
+  isTopSlot: 0
+  isBottomsSlot: 0
+  playerOutfitter: {fileID: 0}
 --- !u!1 &783267419
 GameObject:
   m_ObjectHideFlags: 0
@@ -10155,6 +10633,7 @@ GameObject:
   - component: {fileID: 791144399}
   - component: {fileID: 791144401}
   - component: {fileID: 791144400}
+  - component: {fileID: 791144402}
   m_Layer: 5
   m_Name: Torso
   m_TagString: Untagged
@@ -10219,6 +10698,26 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 791144398}
   m_CullTransparentMesh: 1
+--- !u!114 &791144402
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 791144398}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d68112c540970a74daea47c742ea2497, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerInventory: {fileID: 0}
+  slotIndex: 17
+  isHovering: 0
+  isToolbeltSlot: 0
+  isHatSlot: 0
+  isTopSlot: 1
+  isBottomsSlot: 0
+  playerOutfitter: {fileID: 0}
 --- !u!1 &791381914
 GameObject:
   m_ObjectHideFlags: 0
@@ -11243,12 +11742,16 @@ MonoBehaviour:
   itemDescription: Wow, so good for testing!
   itemIcon: {fileID: 21300000, guid: aa2b12068edc94b4abd6ce737a2d323b, type: 3}
   itemType: TestType
-  itemID: 0
   itemValue: 0
   foodIncreaseAmount: 0
   isTall: 0
   positionOffset: 0
   rotationOffset: 0
+  itemColor: {r: 1, g: 1, b: 1, a: 1}
+  itemTexture: {fileID: 0}
+  hatPositionOffset: {x: 0, y: 0, z: 0}
+  hatRotationOffset: {x: 0, y: 0, z: 0, w: 0}
+  hatScale: {x: 1, y: 1, z: 1}
 --- !u!65 &880995742
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -11616,14 +12119,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Test Object C
   itemDescription: Wow, so good for testing!
-  itemIcon: {fileID: 21300000, guid: 56001718fffbf6841b3df119a876c3ab, type: 3}
-  itemType: Hat
-  itemID: 2
+  itemIcon: {fileID: 21300000, guid: 0899da402b90ed9469ba6adac4fe3c6b, type: 3}
+  itemType: Furniture
   itemValue: 0
   foodIncreaseAmount: 0
   isTall: 0
   positionOffset: 0
   rotationOffset: 0
+  itemColor: {r: 1, g: 1, b: 1, a: 1}
+  itemTexture: {fileID: 0}
+  hatPositionOffset: {x: 0, y: 0, z: 0}
+  hatRotationOffset: {x: 0, y: 0, z: 0, w: 0}
+  hatScale: {x: 1, y: 1, z: 1}
 --- !u!65 &905349849
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -11768,12 +12275,16 @@ MonoBehaviour:
   itemDescription: Good for cutting grass.
   itemIcon: {fileID: 21300000, guid: d41bcacfb9929c342b6bf65cd41346ff, type: 3}
   itemType: Tool
-  itemID: 0
   itemValue: 0
   foodIncreaseAmount: 0
   isTall: 0
   positionOffset: 0.9
   rotationOffset: 0
+  itemColor: {r: 1, g: 1, b: 1, a: 1}
+  itemTexture: {fileID: 0}
+  hatPositionOffset: {x: 0, y: 0, z: 0}
+  hatRotationOffset: {x: 0, y: 0, z: 0, w: 0}
+  hatScale: {x: 1, y: 1, z: 1}
 --- !u!4 &931191183
 Transform:
   m_ObjectHideFlags: 0
@@ -12018,6 +12529,10 @@ MonoBehaviour:
   slotIndex: 10
   isHovering: 0
   isToolbeltSlot: 0
+  isHatSlot: 0
+  isTopSlot: 0
+  isBottomsSlot: 0
+  playerOutfitter: {fileID: 0}
 --- !u!1 &952641853
 GameObject:
   m_ObjectHideFlags: 0
@@ -12110,6 +12625,10 @@ MonoBehaviour:
   slotIndex: 7
   isHovering: 0
   isToolbeltSlot: 0
+  isHatSlot: 0
+  isTopSlot: 0
+  isBottomsSlot: 0
+  playerOutfitter: {fileID: 0}
 --- !u!1 &955868589
 GameObject:
   m_ObjectHideFlags: 0
@@ -12370,12 +12889,16 @@ MonoBehaviour:
   itemDescription: Good for tilling soil.
   itemIcon: {fileID: 21300000, guid: d41bcacfb9929c342b6bf65cd41346ff, type: 3}
   itemType: Tool
-  itemID: 0
   itemValue: 0
   foodIncreaseAmount: 0
   isTall: 0
   positionOffset: 1.2
   rotationOffset: 90
+  itemColor: {r: 1, g: 1, b: 1, a: 1}
+  itemTexture: {fileID: 0}
+  hatPositionOffset: {x: 0, y: 0, z: 0}
+  hatRotationOffset: {x: 0, y: 0, z: 0, w: 0}
+  hatScale: {x: 1, y: 1, z: 1}
 --- !u!65 &980099996
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -13709,12 +14232,16 @@ MonoBehaviour:
   itemDescription: Great to dig with!
   itemIcon: {fileID: 21300000, guid: d41bcacfb9929c342b6bf65cd41346ff, type: 3}
   itemType: Tool
-  itemID: 0
   itemValue: 0
   foodIncreaseAmount: 0
   isTall: 0
   positionOffset: 0.5
   rotationOffset: 0
+  itemColor: {r: 1, g: 1, b: 1, a: 1}
+  itemTexture: {fileID: 0}
+  hatPositionOffset: {x: 0, y: 0, z: 0}
+  hatRotationOffset: {x: 0, y: 0, z: 0, w: 0}
+  hatScale: {x: 1, y: 1, z: 1}
 --- !u!65 &1062217262
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -14196,12 +14723,16 @@ MonoBehaviour:
   itemDescription: Wow, so good for testing!
   itemIcon: {fileID: 21300000, guid: d41bcacfb9929c342b6bf65cd41346ff, type: 3}
   itemType: Tool
-  itemID: 3
   itemValue: 0
   foodIncreaseAmount: 0
   isTall: 0
   positionOffset: 0
   rotationOffset: 0
+  itemColor: {r: 1, g: 1, b: 1, a: 1}
+  itemTexture: {fileID: 0}
+  hatPositionOffset: {x: 0, y: 0, z: 0}
+  hatRotationOffset: {x: 0, y: 0, z: 0, w: 0}
+  hatScale: {x: 1, y: 1, z: 1}
 --- !u!65 &1110359682
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -14582,12 +15113,16 @@ MonoBehaviour:
   itemDescription: Lantern
   itemIcon: {fileID: 21300000, guid: d41bcacfb9929c342b6bf65cd41346ff, type: 3}
   itemType: Tool
-  itemID: 0
   itemValue: 0
   foodIncreaseAmount: 0
   isTall: 1
   positionOffset: 10
   rotationOffset: 0
+  itemColor: {r: 1, g: 1, b: 1, a: 1}
+  itemTexture: {fileID: 0}
+  hatPositionOffset: {x: 0, y: 0, z: 0}
+  hatRotationOffset: {x: 0, y: 0, z: 0, w: 0}
+  hatScale: {x: 1, y: 1, z: 1}
 --- !u!65 &1133199584
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -14856,6 +15391,10 @@ MonoBehaviour:
   slotIndex: 14
   isHovering: 0
   isToolbeltSlot: 1
+  isHatSlot: 0
+  isTopSlot: 0
+  isBottomsSlot: 0
+  playerOutfitter: {fileID: 0}
 --- !u!1 &1155084730
 GameObject:
   m_ObjectHideFlags: 0
@@ -15084,6 +15623,10 @@ MonoBehaviour:
   slotIndex: 2
   isHovering: 0
   isToolbeltSlot: 0
+  isHatSlot: 0
+  isTopSlot: 0
+  isBottomsSlot: 0
+  playerOutfitter: {fileID: 0}
 --- !u!1 &1205320889
 GameObject:
   m_ObjectHideFlags: 0
@@ -15312,6 +15855,10 @@ MonoBehaviour:
   slotIndex: 11
   isHovering: 0
   isToolbeltSlot: 0
+  isHatSlot: 0
+  isTopSlot: 0
+  isBottomsSlot: 0
+  playerOutfitter: {fileID: 0}
 --- !u!1 &1228946688
 GameObject:
   m_ObjectHideFlags: 0
@@ -16014,12 +16561,16 @@ MonoBehaviour:
   itemDescription: Good for cutting!
   itemIcon: {fileID: 21300000, guid: d41bcacfb9929c342b6bf65cd41346ff, type: 3}
   itemType: Tool
-  itemID: 0
   itemValue: 0
   foodIncreaseAmount: 0
   isTall: 0
   positionOffset: 1.2
   rotationOffset: 0
+  itemColor: {r: 1, g: 1, b: 1, a: 1}
+  itemTexture: {fileID: 0}
+  hatPositionOffset: {x: 0, y: 0, z: 0}
+  hatRotationOffset: {x: 0, y: 0, z: 0, w: 0}
+  hatScale: {x: 1, y: 1, z: 1}
 --- !u!1 &1270136446
 GameObject:
   m_ObjectHideFlags: 0
@@ -16091,12 +16642,16 @@ MonoBehaviour:
   itemDescription: A basic fishing rod! Great for catching fish.
   itemIcon: {fileID: 21300000, guid: d41bcacfb9929c342b6bf65cd41346ff, type: 3}
   itemType: Tool
-  itemID: 0
   itemValue: 6
   foodIncreaseAmount: 0
   isTall: 0
   positionOffset: 1.3
   rotationOffset: 0
+  itemColor: {r: 1, g: 1, b: 1, a: 1}
+  itemTexture: {fileID: 0}
+  hatPositionOffset: {x: 0, y: 0, z: 0}
+  hatRotationOffset: {x: 0, y: 0, z: 0, w: 0}
+  hatScale: {x: 1, y: 1, z: 1}
 --- !u!1001 &1283727639
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -16171,7 +16726,6 @@ GameObject:
   - component: {fileID: 1311977568}
   - component: {fileID: 1311977570}
   - component: {fileID: 1311977571}
-  - component: {fileID: 1311977572}
   m_Layer: 0
   m_Name: Game Manager
   m_TagString: Untagged
@@ -16300,18 +16854,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   ItemCollisionPopup2: {fileID: 1969435589}
---- !u!114 &1311977572
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1311977567}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4c844bd08876d7f40b798e92e669a779, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1323446716
 GameObject:
   m_ObjectHideFlags: 0
@@ -17100,12 +17642,16 @@ MonoBehaviour:
   itemDescription: Musical instrument, used in ceremonies.
   itemIcon: {fileID: 21300000, guid: d41bcacfb9929c342b6bf65cd41346ff, type: 3}
   itemType: Tool
-  itemID: 0
   itemValue: 0
   foodIncreaseAmount: 0
   isTall: 0
   positionOffset: 1.2
   rotationOffset: 0
+  itemColor: {r: 1, g: 1, b: 1, a: 1}
+  itemTexture: {fileID: 0}
+  hatPositionOffset: {x: 0, y: 0, z: 0}
+  hatRotationOffset: {x: 0, y: 0, z: 0, w: 0}
+  hatScale: {x: 1, y: 1, z: 1}
 --- !u!65 &1362985019
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -17458,6 +18004,141 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1380309630}
   m_CullTransparentMesh: 1
+--- !u!1 &1382993249
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1382993254}
+  - component: {fileID: 1382993253}
+  - component: {fileID: 1382993252}
+  - component: {fileID: 1382993251}
+  - component: {fileID: 1382993250}
+  m_Layer: 0
+  m_Name: TestTop
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1382993250
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1382993249}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54683947610219443aff465b38866815, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemName: Test Top
+  itemDescription: A top that is perfect for testing!
+  itemIcon: {fileID: 21300000, guid: aa92ca9dc7c9eb648b5b3ffe477e231a, type: 3}
+  itemType: Top
+  itemValue: 0
+  foodIncreaseAmount: 0
+  isTall: 0
+  positionOffset: 0
+  rotationOffset: 0
+  itemColor: {r: 0.98490566, g: 0, b: 0, a: 1}
+  itemTexture: {fileID: 2800000, guid: 280ce7f7b777815479a7155292aad7c6, type: 3}
+  hatPositionOffset: {x: 0, y: 0, z: 0}
+  hatRotationOffset: {x: 0, y: 0, z: 0, w: 0}
+  hatScale: {x: 1, y: 1, z: 1}
+--- !u!65 &1382993251
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1382993249}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 5, z: 1}
+  m_Center: {x: 0, y: 2, z: 0}
+--- !u!23 &1382993252
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1382993249}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &1382993253
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1382993249}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!4 &1382993254
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1382993249}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 6.84, y: 0.031, z: -16.355}
+  m_LocalScale: {x: 0.12565248, y: 0.061047, z: 0.12565248}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1391121395
 GameObject:
   m_ObjectHideFlags: 0
@@ -17686,6 +18367,10 @@ MonoBehaviour:
   slotIndex: 15
   isHovering: 0
   isToolbeltSlot: 1
+  isHatSlot: 0
+  isTopSlot: 0
+  isBottomsSlot: 0
+  playerOutfitter: {fileID: 0}
 --- !u!1 &1412290798
 GameObject:
   m_ObjectHideFlags: 0
@@ -17983,6 +18668,10 @@ MonoBehaviour:
   slotIndex: 1
   isHovering: 0
   isToolbeltSlot: 0
+  isHatSlot: 0
+  isTopSlot: 0
+  isBottomsSlot: 0
+  playerOutfitter: {fileID: 0}
 --- !u!1 &1452133082
 GameObject:
   m_ObjectHideFlags: 0
@@ -17994,6 +18683,7 @@ GameObject:
   - component: {fileID: 1452133083}
   - component: {fileID: 1452133085}
   - component: {fileID: 1452133084}
+  - component: {fileID: 1452133086}
   m_Layer: 5
   m_Name: Bottoms
   m_TagString: Untagged
@@ -18058,6 +18748,26 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1452133082}
   m_CullTransparentMesh: 1
+--- !u!114 &1452133086
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1452133082}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d68112c540970a74daea47c742ea2497, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerInventory: {fileID: 0}
+  slotIndex: 18
+  isHovering: 0
+  isToolbeltSlot: 0
+  isHatSlot: 0
+  isTopSlot: 0
+  isBottomsSlot: 1
+  playerOutfitter: {fileID: 0}
 --- !u!1 &1511361292
 GameObject:
   m_ObjectHideFlags: 0
@@ -18286,6 +18996,10 @@ MonoBehaviour:
   slotIndex: 9
   isHovering: 0
   isToolbeltSlot: 0
+  isHatSlot: 0
+  isTopSlot: 0
+  isBottomsSlot: 0
+  playerOutfitter: {fileID: 0}
 --- !u!1 &1543423398
 GameObject:
   m_ObjectHideFlags: 0
@@ -18456,12 +19170,16 @@ MonoBehaviour:
   itemDescription: Used to water plants.
   itemIcon: {fileID: 21300000, guid: d41bcacfb9929c342b6bf65cd41346ff, type: 3}
   itemType: Tool
-  itemID: 0
   itemValue: 0
   foodIncreaseAmount: 0
   isTall: 1
   positionOffset: 1
   rotationOffset: 0
+  itemColor: {r: 1, g: 1, b: 1, a: 1}
+  itemTexture: {fileID: 0}
+  hatPositionOffset: {x: 0, y: 0, z: 0}
+  hatRotationOffset: {x: 0, y: 0, z: 0, w: 0}
+  hatScale: {x: 1, y: 1, z: 1}
 --- !u!65 &1547270220
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -19496,7 +20214,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: aa2b12068edc94b4abd6ce737a2d323b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 34fa21846399cae47af3b099f6578af6, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -20117,12 +20835,16 @@ MonoBehaviour:
   itemDescription: Musical instrument, often used in ceremonies.
   itemIcon: {fileID: 21300000, guid: d41bcacfb9929c342b6bf65cd41346ff, type: 3}
   itemType: Tool
-  itemID: 0
   itemValue: 0
   foodIncreaseAmount: 0
   isTall: 1
   positionOffset: 0.8
   rotationOffset: 0
+  itemColor: {r: 1, g: 1, b: 1, a: 1}
+  itemTexture: {fileID: 0}
+  hatPositionOffset: {x: 0, y: 0, z: 0}
+  hatRotationOffset: {x: 0, y: 0, z: 0, w: 0}
+  hatScale: {x: 1, y: 1, z: 1}
 --- !u!65 &1731339540
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -21444,12 +22166,16 @@ MonoBehaviour:
   itemDescription: Good for hitting!
   itemIcon: {fileID: 21300000, guid: d41bcacfb9929c342b6bf65cd41346ff, type: 3}
   itemType: Tool
-  itemID: 0
   itemValue: 0
   foodIncreaseAmount: 0
   isTall: 0
   positionOffset: 0.7
   rotationOffset: 0
+  itemColor: {r: 1, g: 1, b: 1, a: 1}
+  itemTexture: {fileID: 0}
+  hatPositionOffset: {x: 0, y: 0, z: 0}
+  hatRotationOffset: {x: 0, y: 0, z: 0, w: 0}
+  hatScale: {x: 1, y: 1, z: 1}
 --- !u!65 &1808904836
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -21809,12 +22535,16 @@ MonoBehaviour:
   itemDescription: Wow, so good for testing!
   itemIcon: {fileID: 21300000, guid: f6b7413e01c49964cb2b8fee8f42e5ec, type: 3}
   itemType: Food
-  itemID: 0
   itemValue: 0
   foodIncreaseAmount: 3
   isTall: 0
   positionOffset: 0
   rotationOffset: 0
+  itemColor: {r: 1, g: 1, b: 1, a: 1}
+  itemTexture: {fileID: 0}
+  hatPositionOffset: {x: 0, y: 0, z: 0}
+  hatRotationOffset: {x: 0, y: 0, z: 0, w: 0}
+  hatScale: {x: 1, y: 1, z: 1}
 --- !u!65 &1845263326
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -23010,12 +23740,16 @@ MonoBehaviour:
   itemDescription: Used by the police.
   itemIcon: {fileID: 21300000, guid: d41bcacfb9929c342b6bf65cd41346ff, type: 3}
   itemType: Tool
-  itemID: 0
   itemValue: 0
   foodIncreaseAmount: 0
   isTall: 0
   positionOffset: 1.2
   rotationOffset: 0
+  itemColor: {r: 1, g: 1, b: 1, a: 1}
+  itemTexture: {fileID: 0}
+  hatPositionOffset: {x: 0, y: 0, z: 0}
+  hatRotationOffset: {x: 0, y: 0, z: 0, w: 0}
+  hatScale: {x: 1, y: 1, z: 1}
 --- !u!65 &1930185145
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -23145,6 +23879,10 @@ MonoBehaviour:
   slotIndex: 3
   isHovering: 0
   isToolbeltSlot: 0
+  isHatSlot: 0
+  isTopSlot: 0
+  isBottomsSlot: 0
+  playerOutfitter: {fileID: 0}
 --- !u!1 &1949279151
 GameObject:
   m_ObjectHideFlags: 0
@@ -24567,12 +25305,16 @@ MonoBehaviour:
   itemDescription: Wow, so good for testing!
   itemIcon: {fileID: 21300000, guid: d41bcacfb9929c342b6bf65cd41346ff, type: 3}
   itemType: Tool
-  itemID: 3
   itemValue: 0
   foodIncreaseAmount: 0
   isTall: 0
   positionOffset: 0
   rotationOffset: 0
+  itemColor: {r: 1, g: 1, b: 1, a: 1}
+  itemTexture: {fileID: 0}
+  hatPositionOffset: {x: 0, y: 0, z: 0}
+  hatRotationOffset: {x: 0, y: 0, z: 0, w: 0}
+  hatScale: {x: 1, y: 1, z: 1}
 --- !u!65 &2042900190
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -24754,6 +25496,10 @@ MonoBehaviour:
   slotIndex: 0
   isHovering: 0
   isToolbeltSlot: 0
+  isHatSlot: 0
+  isTopSlot: 0
+  isBottomsSlot: 0
+  playerOutfitter: {fileID: 0}
 --- !u!1 &2060170175
 GameObject:
   m_ObjectHideFlags: 0
@@ -25389,8 +26135,8 @@ SceneRoots:
   - {fileID: 102193115}
   - {fileID: 1779848542}
   - {fileID: 330585546}
-  - {fileID: 329348374}
   - {fileID: 1797807115}
+  - {fileID: 329348374}
   - {fileID: 2025335293}
   - {fileID: 1924461001}
   - {fileID: 582056375}
@@ -25430,3 +26176,6 @@ SceneRoots:
   - {fileID: 1622502738}
   - {fileID: 1917408105}
   - {fileID: 1969435593}
+  - {fileID: 1382993254}
+  - {fileID: 107647635}
+  - {fileID: 724033722}

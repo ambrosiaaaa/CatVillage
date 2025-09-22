@@ -60,9 +60,9 @@ public class Player_Inventory : MonoBehaviour
     private float collisionPopupTimer = 0f;
     private bool collisionPopupActive = false;
     private CanvasGroup collisionPopupCanvasGroup;
-        private float inventoryTooFullPopupTimer = 0f;
-        private bool inventoryTooFullPopupActive = false;
-        private CanvasGroup inventoryTooFullPopupCanvasGroup;
+    private float inventoryTooFullPopupTimer = 0f;
+    private bool inventoryTooFullPopupActive = false;
+    private CanvasGroup inventoryTooFullPopupCanvasGroup;
 
     public GameObject previewObject = null;
     private Material previewMaterial = null;
@@ -441,8 +441,8 @@ public class Player_Inventory : MonoBehaviour
 
     void InitialiseInventorySlots()
     {
-        // Initialise the inventory slots
-        slots = new InventorySlot[inventorySlots.Length + toolbeltSlots.Length]; // Add space for toolbelt slots
+        // Initialise the inventory slots (inventory + toolbelt + 3 outfit slots)
+        slots = new InventorySlot[inventorySlots.Length + toolbeltSlots.Length + 3]; // Add space for toolbelt slots and outfit slots
 
         // First, add inventory slots
         for (int i = 0; i < inventorySlots.Length; i++)
@@ -477,6 +477,53 @@ public class Player_Inventory : MonoBehaviour
                 icon = iconImage
             };
         }
+
+        // Finally, add the outfit slots (hat, top, and bottom) with dedicated indices
+        // Hat slot - index after all inventory and toolbelt slots
+        int hatSlotIndex = inventorySlots.Length + toolbeltSlots.Length;
+        GameObject iconObjHat = Instantiate(inventorySlotIcon, headSlot.transform);
+        iconObjHat.transform.localPosition = Vector3.zero;
+        Image iconImageHat = iconObjHat.GetComponent<Image>();
+
+        Debug.Log($"Hat slot index: {hatSlotIndex}, total slots: {slots.Length}");
+        slots[hatSlotIndex] = new InventorySlot
+        {
+            slot = headSlot,
+            itemObject = null,
+            item = null,
+            icon = iconImageHat
+        };
+
+        // Top slot - index after hat slot
+        int topSlotIndex = inventorySlots.Length + toolbeltSlots.Length + 1;
+        GameObject iconObjTop = Instantiate(inventorySlotIcon, torsoSlot.transform);
+        iconObjTop.transform.localPosition = Vector3.zero;
+        Image iconImageTop = iconObjTop.GetComponent<Image>();
+
+        slots[topSlotIndex] = new InventorySlot
+        {
+            slot = torsoSlot,
+            itemObject = null,
+            item = null,
+            icon = iconImageTop
+        };
+
+        Debug.Log($"Top slot index: {topSlotIndex}, total slots: {slots.Length}");
+        
+        // Bottom slot - index after top slot
+        int bottomSlotIndex = inventorySlots.Length + toolbeltSlots.Length + 2;
+        GameObject iconObjBottom = Instantiate(inventorySlotIcon, bottomSlot.transform);
+        iconObjBottom.transform.localPosition = Vector3.zero;
+        Image iconImageBottom = iconObjBottom.GetComponent<Image>();
+
+        slots[bottomSlotIndex] = new InventorySlot
+        {
+            slot = bottomSlot,
+            itemObject = null,
+            item = null,
+            icon = iconImageBottom
+        };
+        Debug.Log($"Bottom slot index: {bottomSlotIndex}, total slots: {slots.Length}");
     }
 
     void AddItemToInventory(Item item)
@@ -926,7 +973,21 @@ public class Player_Inventory : MonoBehaviour
         //Place item into the item slot
         if (slotIndex < 0 || slotIndex >= slots.Length) return; // Invalid slot index
 
+        // Check if the item can be dropped in this slot type
+        if (!CanItemBeDroppedInSlot(tempSlot.item, slotIndex))
+        {
+            Debug.LogWarning($"Cannot drop {tempSlot.item.itemType} item in this slot type.");
+            return;
+        }
+
         var slot = slots[slotIndex];
+
+        // Check if slot is already occupied
+        if (slot.item != null)
+        {
+            Debug.LogWarning("Slot is already occupied.");
+            return;
+        }
 
         // Place the item into the slot
         slot.item = tempSlot.item;
@@ -959,6 +1020,13 @@ public class Player_Inventory : MonoBehaviour
         if (slotIndex < 0 || slotIndex >= slots.Length) return; // Invalid slot index
 
         var slot = slots[slotIndex];
+
+        // Check if the temp item can be dropped in this slot type
+        if (!CanItemBeDroppedInSlot(tempSlot.item, slotIndex))
+        {
+            Debug.LogWarning($"Cannot drop {tempSlot.item.itemType} item in this slot type.");
+            return;
+        }
 
         // Store the slot's current item and itemObject in newTempSlot
         Item prevItem = slot.item;
@@ -1239,6 +1307,56 @@ public class Player_Inventory : MonoBehaviour
                 activeToolObject = null;
             }
         }
+    }
+
+    // Helper methods to identify slot types
+    public bool IsInventorySlot(int slotIndex)
+    {
+        return slotIndex >= 0 && slotIndex < inventorySlots.Length;
+    }
+
+    public bool IsToolbeltSlot(int slotIndex)
+    {
+        return slotIndex >= inventorySlots.Length && slotIndex < inventorySlots.Length + toolbeltSlots.Length;
+    }
+
+    public bool IsOutfitSlot(int slotIndex)
+    {
+        return slotIndex >= inventorySlots.Length + toolbeltSlots.Length && slotIndex < slots.Length;
+    }
+
+    public bool IsHatSlot(int slotIndex)
+    {
+        return slotIndex == inventorySlots.Length + toolbeltSlots.Length;
+    }
+
+    public bool IsTopSlot(int slotIndex)
+    {
+        return slotIndex == inventorySlots.Length + toolbeltSlots.Length + 1;
+    }
+
+    public bool IsBottomSlot(int slotIndex)
+    {
+        return slotIndex == inventorySlots.Length + toolbeltSlots.Length + 2;
+    }
+
+    // Validation method to check if an item can be placed in a specific slot type
+    public bool CanItemBeDroppedInSlot(Item item, int slotIndex)
+    {
+        if (item == null) return false;
+
+        // Items can always go in inventory slots
+        if (IsInventorySlot(slotIndex)) return true;
+
+        // Tools can go in toolbelt slots
+        if (IsToolbeltSlot(slotIndex) && item.itemType == "Tool") return true;
+
+        // Outfit items in their respective slots
+        if (IsHatSlot(slotIndex) && item.itemType == "Hat") return true;
+        if (IsTopSlot(slotIndex) && item.itemType == "Top") return true;
+        if (IsBottomSlot(slotIndex) && item.itemType == "Bottoms") return true;
+
+        return false;
     }
 
 }

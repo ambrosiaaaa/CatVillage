@@ -25,7 +25,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _ClothingBottom:
-        m_Texture: {fileID: 2800000, guid: f1445d17b0280e945a4255550d6c64c4, type: 3}
+        m_Texture: {fileID: 2800000, guid: 1b3f965458b2dcc42ad5e67c57d92e8e, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ClothingTop:
@@ -98,8 +98,8 @@ Material:
     - _QueueOffset: 0
     m_Colors:
     - _BaseFurColor: {r: 0.7960785, g: 0.654902, b: 0.4784314, a: 0}
-    - _ClothingBottomColour: {r: 0, g: 0, b: 0, a: 1}
-    - _ClothingTopColour: {r: 0, g: 0, b: 0, a: 1}
+    - _ClothingBottomColour: {r: 1, g: 0, b: 0.93148184, a: 1}
+    - _ClothingTopColour: {r: 0.98490566, g: 0, b: 0, a: 1}
     - _EyeColor: {r: 0.2392157, g: 0.16078432, b: 0.10588236, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

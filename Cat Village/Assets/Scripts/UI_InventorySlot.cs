@@ -8,6 +8,10 @@ public class UI_InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExi
     public int slotIndex; // Set this to the slot's index in the inventory
     public bool isHovering = false;
     public bool isToolbeltSlot = false;
+    public bool isHatSlot = false;
+    public bool isTopSlot = false;
+    public bool isBottomsSlot = false;
+    public Player_Outfitter playerOutfitter; // Reference to the Player_Outfitter script
 
     void Start()
     {
@@ -25,6 +29,23 @@ public class UI_InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExi
             else
             {
                 Debug.LogWarning("Game Manager object not found in scene.");
+            }
+        }
+
+        if (playerOutfitter == null)
+        {
+            GameObject player = GameObject.FindWithTag("Player");
+            if (player != null)
+            {
+                playerOutfitter = player.GetComponent<Player_Outfitter>();
+                if (playerOutfitter == null)
+                {
+                    Debug.LogWarning("Player_Outfitter component not found on Player.");
+                }
+            }
+            else
+            {
+                Debug.LogWarning("Player object with tag 'Player' not found in scene.");
             }
         }
     }
@@ -80,6 +101,45 @@ public class UI_InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExi
                         // Optionally, show a UI warning here
                     }
                 }
+                else if (isHatSlot)
+                {
+                    if (playerInventory.tempSlot.item.itemType == "Hat")
+                    {
+                        Debug.Log("Dropping hat into hat slot " + slotIndex);
+                        playerInventory.Inventory_DropItem(slotIndex);
+                    }
+                    else
+                    {
+                        Debug.Log("Cannot place non-hat item into hat slot " + slotIndex);
+                        // Optionally, show a UI warning here
+                    }
+                }
+                else if (isTopSlot)
+                {
+                    if (playerInventory.tempSlot.item.itemType == "Top")
+                    {
+                        Debug.Log("Dropping top into top slot " + slotIndex);
+                        playerInventory.Inventory_DropItem(slotIndex);
+                    }
+                    else
+                    {
+                        Debug.Log("Cannot place non-top item into top slot " + slotIndex);
+                        // Optionally, show a UI warning here
+                    }
+                }
+                else if (isBottomsSlot)
+                {
+                    if (playerInventory.tempSlot.item.itemType == "Bottoms")
+                    {
+                        Debug.Log("Dropping bottoms into bottoms slot " + slotIndex);
+                        playerInventory.Inventory_DropItem(slotIndex);
+                    }
+                    else
+                    {
+                        Debug.Log("Cannot place non-bottoms item into bottoms slot " + slotIndex);
+                        // Optionally, show a UI warning here
+                    }
+                }
                 else
                 {
                     Debug.Log("Dropping item into slot " + slotIndex);
@@ -103,6 +163,66 @@ public class UI_InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExi
             if (Input.GetKeyDown(KeyCode.E))
             {
                 playerInventory.RemoveItemFromInventory(slotIndex);
+            }
+        }
+
+        CheckHatSlot();
+        CheckTopSlot();
+        CheckBottomsSlot();
+    }
+
+    void CheckHatSlot()
+    {
+        if (isHatSlot)
+        {
+            // Check the inventory script to see if the item in this slot contains a hat
+            if (playerInventory.slots[slotIndex].item != null && playerInventory.slots[slotIndex].item.itemType == "Hat")
+            {
+                // Set the hat's position and rotation on the player
+                playerOutfitter.WearHat(playerInventory.slots[slotIndex].item);
+            }
+            else
+            {
+                // This is a hat slot but does not contain a hat
+                playerOutfitter.RemoveHat();
+            }
+        }
+    }
+
+    void CheckTopSlot()
+    {
+        if (isTopSlot)
+        {
+            // Check the inventory script to see if the item in this slot contains a top
+            if (playerInventory.slots[slotIndex].item != null && playerInventory.slots[slotIndex].item.itemType == "Top")
+            {
+                // Set the top's color and texture on the player
+                playerOutfitter.ChangeOutfitTop(playerInventory.slots[slotIndex].item.itemTexture);
+                playerOutfitter.RecolorOutfitTop(playerInventory.slots[slotIndex].item.itemColor);
+            }
+            else
+            {
+                // This is a top slot but does not contain a top, reset to default
+                playerOutfitter.RemoveOutfitTop();
+            }
+        }
+    }
+
+    void CheckBottomsSlot()
+    {
+        if (isBottomsSlot)
+        {
+            // Check the inventory script to see if the item in this slot contains bottoms
+            if (playerInventory.slots[slotIndex].item != null && playerInventory.slots[slotIndex].item.itemType == "Bottoms")
+            {
+                // Set the bottoms' color and texture on the player
+                playerOutfitter.ChangeOutfitBottom(playerInventory.slots[slotIndex].item.itemTexture);
+                playerOutfitter.RecolorOutfitBottom(playerInventory.slots[slotIndex].item.itemColor);
+            }
+            else
+            {
+                // This is a bottoms slot but does not contain bottoms, reset to default
+                playerOutfitter.RemoveOutfitBottom();
             }
         }
     }
