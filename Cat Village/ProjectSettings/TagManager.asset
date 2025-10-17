@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 3
   tags:
   - Item
+  - NPC
+  - Tree
   layers:
   - Default
   - TransparentFX

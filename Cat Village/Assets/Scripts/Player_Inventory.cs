@@ -27,11 +27,13 @@ public class Player_Inventory : MonoBehaviour
 
     [Header("Current Item")]
     public Item currentItem; // Reference to the currently selected item
+    public bool isHoldingItem = false;
 
     [Header("Player Reference")]
     public GameObject player; // Drag and drop the player character here
     public GameObject playerHand; // Where to hold the active tool
     public GameObject activeToolObject; // The currently displayed tool in hand
+    public GameObject playerAttackRadius; // The player's attack radius
 
     [Header("Miscellaneous Settings")]
     public float pickupRange = 0.5f; // Range within which the player can pick up items
@@ -46,6 +48,9 @@ public class Player_Inventory : MonoBehaviour
     public TMPro.TMP_Text food_itemDescriptionText;
     public TMPro.TMP_Text food_itemTypeText;
     public Vector3 toolTipOffset = new Vector3(115f, 60f, 0f);
+
+    [Header("Tool Scripts")]
+    public FishingRod fr;
 
     public class InventorySlot
     {
@@ -116,13 +121,13 @@ public class Player_Inventory : MonoBehaviour
         if (inventoryTooFullPopupUI != null)
         {
             inventoryTooFullPopupUI.SetActive(false);
-                // Add or get CanvasGroup for fading
-                inventoryTooFullPopupCanvasGroup = inventoryTooFullPopupUI.GetComponent<CanvasGroup>();
-                if (inventoryTooFullPopupCanvasGroup == null)
-                {
-                    inventoryTooFullPopupCanvasGroup = inventoryTooFullPopupUI.AddComponent<CanvasGroup>();
-                }
-                inventoryTooFullPopupCanvasGroup.alpha = 1f;
+            // Add or get CanvasGroup for fading
+            inventoryTooFullPopupCanvasGroup = inventoryTooFullPopupUI.GetComponent<CanvasGroup>();
+            if (inventoryTooFullPopupCanvasGroup == null)
+            {
+                inventoryTooFullPopupCanvasGroup = inventoryTooFullPopupUI.AddComponent<CanvasGroup>();
+            }
+            inventoryTooFullPopupCanvasGroup.alpha = 1f;
         }
         // Hide collision popup UI on load
         if (collisionPopupUI != null)
@@ -142,6 +147,14 @@ public class Player_Inventory : MonoBehaviour
         }
 
         InitialiseInventorySlots();
+
+        fr = this.gameObject.GetComponent<FishingRod>();
+
+        playerAttackRadius = player.gameObject.transform.Find("AttackRadius").gameObject;
+        if (playerAttackRadius != null)
+        {
+            playerAttackRadius.SetActive(false);
+        }
     }
 
     // Update is called once per frame
@@ -158,7 +171,7 @@ public class Player_Inventory : MonoBehaviour
         // Open/Close inventory UI
         if (player == null)
         {
-            Debug.LogWarning("Player reference not set in Player_Inventory script.");
+            //Debug.LogWarning("Player reference not set in Player_Inventory script.");
             return;
         }
         OpenCloseInventory();
@@ -395,7 +408,7 @@ public class Player_Inventory : MonoBehaviour
         Vector3 rayOrigin = player.transform.position + Vector3.up * 0.3f;
         Vector3 rayDirection = player.transform.forward;
         // Visualize the raycast in the Scene view
-        Debug.DrawRay(rayOrigin, rayDirection * pickupRange, Color.cyan);
+        //Debug.DrawRay(rayOrigin, rayDirection * pickupRange, Color.cyan);
         RaycastHit hit;
         if (Physics.Raycast(rayOrigin, rayDirection, out hit, pickupRange))
         {
@@ -485,7 +498,7 @@ public class Player_Inventory : MonoBehaviour
         iconObjHat.transform.localPosition = Vector3.zero;
         Image iconImageHat = iconObjHat.GetComponent<Image>();
 
-        Debug.Log($"Hat slot index: {hatSlotIndex}, total slots: {slots.Length}");
+        //Debug.Log($"Hat slot index: {hatSlotIndex}, total slots: {slots.Length}");
         slots[hatSlotIndex] = new InventorySlot
         {
             slot = headSlot,
@@ -508,7 +521,7 @@ public class Player_Inventory : MonoBehaviour
             icon = iconImageTop
         };
 
-        Debug.Log($"Top slot index: {topSlotIndex}, total slots: {slots.Length}");
+        //Debug.Log($"Top slot index: {topSlotIndex}, total slots: {slots.Length}");
         
         // Bottom slot - index after top slot
         int bottomSlotIndex = inventorySlots.Length + toolbeltSlots.Length + 2;
@@ -523,7 +536,7 @@ public class Player_Inventory : MonoBehaviour
             item = null,
             icon = iconImageBottom
         };
-        Debug.Log($"Bottom slot index: {bottomSlotIndex}, total slots: {slots.Length}");
+        //Debug.Log($"Bottom slot index: {bottomSlotIndex}, total slots: {slots.Length}");
     }
 
     void AddItemToInventory(Item item)
@@ -536,6 +549,10 @@ public class Player_Inventory : MonoBehaviour
                 // Add the item to this slot
                 slot.item = item;
                 slot.itemObject = item.gameObject;
+                
+                // Set the item's owner to the player
+                item.owner = player;
+                
                 if (slot.icon != null)
                 {
                     slot.icon.sprite = item.itemIcon;
@@ -544,7 +561,7 @@ public class Player_Inventory : MonoBehaviour
                     iconColor.a = 1f;
                     slot.icon.color = iconColor;
                 }
-                Debug.Log($"Added item: {slot.item.itemName} to inventory slot: {slot.slot.name}");
+                //Debug.Log($"Added item: {slot.item.itemName} to inventory slot: {slot.slot.name}");
 
                 // Make item not active in the world, and set currentItem to null
                 item.gameObject.SetActive(false); // Deactivate the item in the world
@@ -552,7 +569,7 @@ public class Player_Inventory : MonoBehaviour
                 return;
             }
         }
-        Debug.Log($"Inventory full! Cannot add item: {item.itemName}");
+        //Debug.Log($"Inventory full! Cannot add item: {item.itemName}");
             // Show inventory too full popup at player's position and start fade timer
             if (inventoryTooFullPopupUI != null && player != null && inventoryTooFullPopupCanvasGroup != null)
             {
@@ -577,7 +594,7 @@ public class Player_Inventory : MonoBehaviour
         HideCollisionPopup();
         if (slot.item != null)
         {
-            Debug.Log($"Removing item: {slot.item.itemName} from inventory slot: {slot.slot.name}");
+            //Debug.Log($"Removing item: {slot.item.itemName} from inventory slot: {slot.slot.name}");
             // Only place if not colliding with another object
             if (!IsPlacementColliding(slot, rotationY))
             {
@@ -588,7 +605,7 @@ public class Player_Inventory : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning("Cannot place item: placement position is colliding with another object.");
+                //Debug.LogWarning("Cannot place item: placement position is colliding with another object.");
                 ShowCollisionPopupAtPlayer();
             }
         }
@@ -653,7 +670,7 @@ public class Player_Inventory : MonoBehaviour
 
     private void TryShowCollisionPopupAndCloseInventory(Player_Movement movement)
     {
-        Debug.LogWarning("Cannot place item: player is colliding with something.");
+        //Debug.LogWarning("Cannot place item: player is colliding with something.");
         if (collisionPopupUI != null && player != null && collisionPopupCanvasGroup != null)
         {
             Vector3 popupPosition = player.transform.position + Vector3.up * 0.5f;
@@ -712,6 +729,14 @@ public class Player_Inventory : MonoBehaviour
         }
         obj.transform.position = dropPosition;
         obj.transform.rotation = Quaternion.Euler(0f, slot.itemObject.transform.eulerAngles.y + rotationY, 0f);
+        
+        // Clear the item's owner when it's dropped
+        Item itemScript = obj.GetComponent<Item>();
+        if (itemScript != null)
+        {
+            itemScript.owner = null;
+        }
+        
         // Set placed object and all children to Ground layer (6)
         SetLayerRecursively(obj, 6);
         obj.SetActive(true);
@@ -976,7 +1001,7 @@ public class Player_Inventory : MonoBehaviour
         // Check if the item can be dropped in this slot type
         if (!CanItemBeDroppedInSlot(tempSlot.item, slotIndex))
         {
-            Debug.LogWarning($"Cannot drop {tempSlot.item.itemType} item in this slot type.");
+            //Debug.LogWarning($"Cannot drop {tempSlot.item.itemType} item in this slot type.");
             return;
         }
 
@@ -985,7 +1010,7 @@ public class Player_Inventory : MonoBehaviour
         // Check if slot is already occupied
         if (slot.item != null)
         {
-            Debug.LogWarning("Slot is already occupied.");
+            //Debug.LogWarning("Slot is already occupied.");
             return;
         }
 
@@ -1024,7 +1049,7 @@ public class Player_Inventory : MonoBehaviour
         // Check if the temp item can be dropped in this slot type
         if (!CanItemBeDroppedInSlot(tempSlot.item, slotIndex))
         {
-            Debug.LogWarning($"Cannot drop {tempSlot.item.itemType} item in this slot type.");
+            //Debug.LogWarning($"Cannot drop {tempSlot.item.itemType} item in this slot type.");
             return;
         }
 
@@ -1165,12 +1190,28 @@ public class Player_Inventory : MonoBehaviour
         if (scroll > 0f)
         {
             // Scroll forward
+            int previousToolIndex = activeToolIndex;
             activeToolIndex = (activeToolIndex + 1) % (maxIndex + 1);
+            
+            // Call fishing rod methods when switching tools
+            if (previousToolIndex != activeToolIndex && fr != null && fr.gameObject != null)
+            {
+                fr.Uncast();
+                fr.HideCatch();
+            }
         }
         else if (scroll < 0f)
         {
             // Scroll backward
+            int previousToolIndex = activeToolIndex;
             activeToolIndex = (activeToolIndex - 1 + (maxIndex + 1)) % (maxIndex + 1);
+            
+            // Call fishing rod methods when switching tools
+            if (previousToolIndex != activeToolIndex && fr != null && fr.gameObject != null)
+            {
+                fr.Uncast();
+                fr.HideCatch();
+            }
         }
     }
 
@@ -1222,14 +1263,6 @@ public class Player_Inventory : MonoBehaviour
 
     public void Toolbelt_DisplayTool()
     {
-        // Make clone of the active tool object and attach to player hand
-        // Refresh tool, remove tool if exists
-        if (activeToolObject != null)
-        {
-            Destroy(activeToolObject);
-            activeToolObject = null;
-        }
-
         // Get the toolbelt slot corresponding to activeToolIndex
         InventorySlot slot = null;
 
@@ -1249,13 +1282,63 @@ public class Player_Inventory : MonoBehaviour
                 break;
             case 4:
                 slot = null;
-                return;
+                break;
         }
 
-        if (slot != null && slot.item != null)
+        // Check if we need to change the tool (only recreate when necessary)
+        bool needsToolChange = false;
+        
+        if (activeToolIndex == 4)
         {
-            // Clone the tool object and attach it to the player's hand
+            // No tool should be active
+            needsToolChange = (activeToolObject != null);
+            if (needsToolChange)
+            {
+                isHoldingItem = false;
+            }
+        }
+        else if (slot != null && slot.item != null)
+        {
+            // Check if current tool matches the slot's item
+            if (activeToolObject == null)
+            {
+                needsToolChange = true;
+            }
+            else
+            {
+                Item currentItemScript = activeToolObject.GetComponent<Item>();
+                if (currentItemScript == null || currentItemScript.itemName != slot.item.itemName)
+                {
+                    needsToolChange = true;
+                }
+            }
+        }
+        else
+        {
+            // Slot is empty, remove tool if one exists
+            needsToolChange = (activeToolObject != null);
+        }
+
+        // Only recreate tool if needed
+        if (needsToolChange)
+        {
+            // Remove existing tool
+            if (activeToolObject != null)
+            {
+                Destroy(activeToolObject);
+                activeToolObject = null;
+            }
+
+            if (activeToolIndex == 4 || slot == null || slot.item == null)
+            {
+                isHoldingItem = false;
+                return;
+            }
+
+            // Create new tool
             activeToolObject = Instantiate(slot.itemObject);
+            isHoldingItem = true;
+            
             // Disable all colliders on the active tool object
             foreach (var col in activeToolObject.GetComponentsInChildren<Collider>())
             {
@@ -1263,12 +1346,14 @@ public class Player_Inventory : MonoBehaviour
             }
             activeToolObject.transform.SetParent(playerHand.transform);
 
-            // Get the active tool's renderer
+            // Get the active tool's renderer and configure position
             Renderer toolRenderer = activeToolObject.GetComponentInChildren<Renderer>();
             float objectLength = 0.0f;
             float posOffset = 0.0f;
             float rotOffset = 0.0f;
             bool isTall = false;
+            int toolId = 0;
+
             Vector3 activeToolOffset = Vector3.zero;
             // Try to get the Item script from the active tool object
             Item itemScript = activeToolObject.GetComponent<Item>();
@@ -1277,6 +1362,7 @@ public class Player_Inventory : MonoBehaviour
                 isTall = itemScript.isTall;
                 posOffset = itemScript.positionOffset;
                 rotOffset = itemScript.rotationOffset;
+                toolId = itemScript.toolId;
             }
             if (toolRenderer != null)
             {
@@ -1293,18 +1379,107 @@ public class Player_Inventory : MonoBehaviour
             }
 
             // Apply offset based on length of the tool
-            //Vector3 activeToolOffset = new Vector3(0.0f, 0.0f, objectLength * 0.3f);
-
             activeToolObject.transform.localPosition = Vector3.zero + activeToolOffset * posOffset;
             activeToolObject.transform.localRotation = Quaternion.Euler(0f, 0f, rotOffset);
             activeToolObject.SetActive(true);
         }
-        if (slot == null)
+
+        // Handle animations and input for the active tool (run every frame)
+        if (activeToolObject != null)
         {
-            if (activeToolObject != null)
+            Item itemScript = activeToolObject.GetComponent<Item>();
+            int toolId = itemScript != null ? itemScript.toolId : 0;
+            Animator anim = player != null ? player.GetComponent<Animator>() : null;
+
+            switch (toolId)
             {
-                Destroy(activeToolObject);
-                activeToolObject = null;
+                case 1:
+                    // Knife
+                    fr.runScript = false;
+                    break;
+                case 2:
+                    // Fishing rod
+                    fr.runScript = true;
+                    break;
+                case 3:
+                    // Axe
+                    if (fr != null && fr.gameObject != null) fr.enabled = false;
+                    fr.runScript = false;
+                    break;
+                case 4:
+                    // Shovel
+                    if (fr != null && fr.gameObject != null) fr.enabled = false;
+                    fr.runScript = false;
+                    break;
+                default:
+                    // Disable fishing rod script and clean up
+                    fr.runScript = false;
+                    break;
+            }
+
+            // Add listener for pressing LMB down to use the tool, make sure inventory is not open
+            if (Input.GetMouseButtonDown(0) && inventoryUI.activeSelf == false)
+            {
+                UseTool(toolId);
+            }
+            else
+            {
+                // TOOL ANIMATIONS - IDLING
+                if (fr != null && fr.gameObject != null && fr.hasCasted)
+                {
+                    if (anim != null) anim.SetInteger("toolUsed", 2);
+                }
+                else
+                {
+                    if (anim != null) anim.SetInteger("toolUsed", 0);
+                    if (fr != null && fr.gameObject != null) fr.Uncast();
+                }
+            }
+        }
+        else
+        {
+            // No tool to display or slot is empty
+            isHoldingItem = false;
+        }
+    }
+
+    public void UseTool(int toolId)
+    {
+        // Implement tool usage logic based on toolId
+        Debug.Log($"Using tool with ID: {toolId}");
+        // Example: If toolId corresponds to a watering can, water the plant in front of the player
+
+        // Get player's animator
+        Animator anim = player != null ? player.GetComponent<Animator>() : null;
+        if (anim != null)
+        {
+            switch (toolId)
+            {
+                case 1:
+                    Debug.Log("Knife used");
+                    anim.SetInteger("toolUsed", 1);
+                    StartCoroutine(ActivateAttackRadius(1.0f, 10)); // Active for 1 second
+                    break;
+                case 2:
+                    Debug.Log("Fishing rod used");
+                    fr.Cast();
+                    break;
+                case 3:
+                    Debug.Log("Axe used");
+                    anim.SetInteger("toolUsed", 1);
+                    //anim.SetInteger("toolUsed", 3);
+                    StartCoroutine(ActivateAttackRadius(2.0f, 20)); // Active for 2 seconds
+                    break;
+                case 4:
+                    Debug.Log("Shovel used");
+                    anim.SetInteger("toolUsed", 4);
+                    break;
+                default:
+                    //Debug.Log("Not a tool.");
+                    anim.SetInteger("toolUsed", 0);
+                    fr.Uncast();
+                    fr.HideCatch();
+                    break;
             }
         }
     }
@@ -1357,6 +1532,47 @@ public class Player_Inventory : MonoBehaviour
         if (IsBottomSlot(slotIndex) && item.itemType == "Bottoms") return true;
 
         return false;
+    }
+
+    // Coroutine to activate attack radius for a set duration
+    private System.Collections.IEnumerator ActivateAttackRadius(float duration, int damage)
+    {
+        Animator anim = player != null ? player.GetComponent<Animator>() : null;
+
+        if (playerAttackRadius != null)
+        {
+            playerAttackRadius.SetActive(true);
+            Debug.Log("Attack radius activated");
+            AttackRadius attackRadiusScript = playerAttackRadius.GetComponent<AttackRadius>();
+            if (attackRadiusScript != null)
+            {
+                attackRadiusScript.damageToCause = damage;
+            }
+
+            // Stop the player moving for x amount of seconds
+            // if (player != null)
+            // {
+            //     var movement = player.GetComponent<Player_Movement>();
+            //     var sounds = player.GetComponent<Player_SoundEffects>();
+            //     if (movement != null) movement.enabled = false;
+            //     if (sounds != null) sounds.enabled = false;
+            //     anim.SetInteger("MovementPhase", 0); // Set to idle
+            // }
+
+            // Wait for the specified duration
+            yield return new WaitForSeconds(duration);
+
+            playerAttackRadius.SetActive(false);
+
+            // Debug.Log("Attack radius deactivated");
+            // if (player != null)
+            // {
+            //     var movement = player.GetComponent<Player_Movement>();
+            //     var sounds = player.GetComponent<Player_SoundEffects>();
+            //     if (movement != null) movement.enabled = true;
+            //     if (sounds != null) sounds.enabled = true;
+            // }
+        }
     }
 
 }

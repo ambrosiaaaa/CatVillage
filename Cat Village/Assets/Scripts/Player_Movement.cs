@@ -25,6 +25,9 @@ public class Player_Movement : MonoBehaviour
     public bool isColliding = false;
     public float collisionRayLength = 0.5f;
 
+    // Get player Inventory script from other game object
+    public Player_Inventory playerInventory;
+
     void Start()
     {
         animator = GetComponent<Animator>();
@@ -49,6 +52,12 @@ public class Player_Movement : MonoBehaviour
         {
             UpdateJumpPhase();
             jumpStartTime += Time.deltaTime;
+        }
+
+        // Update holdTool animator boolean based on inventory
+        if (playerInventory != null)
+        {
+            animator.SetBool("holdTool", playerInventory.isHoldingItem);
         }
 
         if (isGrounded)

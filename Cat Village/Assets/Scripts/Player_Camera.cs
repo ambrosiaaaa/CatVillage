@@ -7,7 +7,7 @@ public class Player_Camera : MonoBehaviour
     public Vector3 offset;
     public float tiltStep = 5f; //degrees to tilt the camera up or down with each key press
     public int maxTilt = 2; //maximum upward tilts
-    public int minTilt = 0; //maximum downward tilts
+    public int minTilt = -2; //maximum downward tilts, usually 0
 
     public int tiltLevel = 0; //current tilt level
     private float basePitch = 33f; //base camera pitch
@@ -18,25 +18,26 @@ public class Player_Camera : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        tiltLevel = 0; // Start at neutral position
         currentPitch = basePitch;
-        targetPitch = basePitch;
+        targetPitch = basePitch + (tiltLevel * tiltStep); // Calculate initial target pitch
     }
 
     // Update is called once per frame
     void Update()
     {
         // Handle up/down arrow input
-        if (Input.GetKeyDown(KeyCode.UpArrow) && tiltLevel < maxTilt)
+        if (Input.GetKeyDown(KeyCode.DownArrow) && tiltLevel < maxTilt)
         {
             tiltLevel++;
         }
-        else if (Input.GetKeyDown(KeyCode.DownArrow) && tiltLevel > minTilt)
+        else if (Input.GetKeyDown(KeyCode.UpArrow) && tiltLevel > minTilt)
         {
             tiltLevel--;
         }
 
         // Calculate target pitch based on tiltLevel
-        targetPitch = basePitch - (tiltLevel * tiltStep);
+        targetPitch = basePitch + (tiltLevel * tiltStep);
 
         // Smoothly interpolate currentPitch towards targetPitch
         currentPitch = Mathf.Lerp(currentPitch, targetPitch, Time.deltaTime * tiltSmoothSpeed);
