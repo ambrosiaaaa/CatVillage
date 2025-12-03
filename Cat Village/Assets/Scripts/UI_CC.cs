@@ -39,6 +39,7 @@ public class UI_CC : MonoBehaviour
     public Texture2D defaultTailWhiteImage;
     public Texture2D defaultUnderTailWhiteImage;
     public Texture2D defaultSiameseImage;
+    public Texture2D defaultTortoiseShellImage;
 
     [Header("Menu2 White Sliders")]
     public Slider wholeBodyWhiteSlider;
@@ -88,6 +89,11 @@ public class UI_CC : MonoBehaviour
     public Toggle siameseToggle;
     public Texture2D siameseImage; // Assign in inspector
     private bool isSiamese = false;
+
+    [Header("Tortoise Shell Selection")]
+    public Button[] tortoiseShellColorButtons;
+    public Texture2D[] tortoiseShellColors;
+    public Color tortoiseColor;
 
     [Header ("Clothing Set Blank")]
     public Texture2D clothingSetBlankImage; // Assign in inspector
@@ -259,6 +265,7 @@ public class UI_CC : MonoBehaviour
             entireTailSlider.maxValue = entireTailImages.Length - 1;
             entireTailSlider.onValueChanged.AddListener(OnEntireTailSliderChanged);
         }
+        
 
         if (siameseToggle != null)
         {
@@ -346,6 +353,16 @@ public class UI_CC : MonoBehaviour
             furPatternButtons[i].onClick.AddListener(() =>
             {
                 SetFurPattern(furPatterns[index]);
+            });
+        }
+
+        // Add listeners for tortoiseshell buttons
+        for (int i = 0; i < tortoiseShellColorButtons.Length && i < tortoiseShellColorButtons.Length; i++)
+        {
+            int index = i;
+            tortoiseShellColorButtons[i].onClick.AddListener(() =>
+            {
+                SetTortoisePattern(tortoiseShellColors[index]);
             });
         }
 
@@ -456,13 +473,61 @@ public class UI_CC : MonoBehaviour
         }
     }
 
+    public void SetTortoisePattern(Texture2D pattern)
+    {
+        if (playerRenderer != null && playerRenderer.material != null && pattern != null)
+        {
+            var mat = playerRenderer.material;
+            if (mat.HasProperty("_TortoiseImage"))
+            {
+                mat.SetTexture("_TortoiseImage", pattern);
+                ChangeTortoiseColour();
+            }
+        }
+
+        //_TortoiseColour, set as oppsoite of colour index chosen by the player
+    }
+
+    public void ChangeTortoiseColour()
+    {
+        if (playerRenderer != null && playerRenderer.material != null)
+        {
+            var mat = playerRenderer.material;
+            // Change tortoise colour to complement base fur colour
+            if (mat.HasProperty("_TortoiseColour") && mat.HasProperty("_TortoiseImage"))
+            {
+                // Simple logic: if base fur color is light, use dark tortoise color and vice versa
+                // Calculate tortoise colour as the dilute version of the base fur colour:
+                if(baseFurColor == furColors[0])
+                {
+                    tortoiseColor = furColors[3]; // Orange
+                }
+                else if(baseFurColor == furColors[5]) // Grey
+                {
+                    tortoiseColor = furColors[4]; // Pale yellow
+                }
+                else if(baseFurColor == furColors[6]) // Light grey
+                {
+                    tortoiseColor = furColors[7]; // Very pale yellow
+                }
+                else
+                {
+                    mat.SetTexture("_TortoiseImage", defaultTortoiseShellImage); // Fully transparent - tortoiseshell cant show up in diluted cats.
+                }
+                mat.SetColor("_TortoiseColour", tortoiseColor);
+            }
+        }
+    }
+
     public void SetFurPattern(Texture2D pattern)
     {
         if (playerRenderer != null && playerRenderer.material != null && pattern != null)
         {
             var mat = playerRenderer.material;
             if (mat.HasProperty("_FurPattern"))
+            {
                 mat.SetTexture("_FurPattern", pattern);
+            }
         }
     }
 
@@ -507,6 +572,7 @@ public class UI_CC : MonoBehaviour
                 mat.SetColor("_BaseFurColor", baseFurColor);
             if (mat.HasProperty("_EyeColor"))
                 mat.SetColor("_EyeColor", eyeColor);
+            ChangeTortoiseColour();
         }
     }
 

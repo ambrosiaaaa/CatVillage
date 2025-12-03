@@ -6,7 +6,7 @@ public class Item : MonoBehaviour
     public string itemName; // Name of the item
     public string itemDescription; // Description of the item
     public Sprite itemIcon; // Icon representing the item
-    public string itemType; // Type of the item ("Tool", "Food", "Hat", "Top", "Bottoms", "Furniture")
+    public string itemType; // Type of the item ("Tool", "Food", "Hat", "Top", "Bottoms", "Furniture", "Material")
     public int itemValue; // Gold value of the item (e.g., for selling)
     public int foodIncreaseAmount; // Amount of health restored
     public bool isTall = false; // If an object is up and down, not lengthwise

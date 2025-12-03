@@ -51,6 +51,7 @@ public class Player_Inventory : MonoBehaviour
 
     [Header("Tool Scripts")]
     public FishingRod fr;
+    public Axe ax;
 
     public class InventorySlot
     {
@@ -149,6 +150,7 @@ public class Player_Inventory : MonoBehaviour
         InitialiseInventorySlots();
 
         fr = this.gameObject.GetComponent<FishingRod>();
+        ax = this.gameObject.GetComponent<Axe>();
 
         playerAttackRadius = player.gameObject.transform.Find("AttackRadius").gameObject;
         if (playerAttackRadius != null)
@@ -1396,24 +1398,29 @@ public class Player_Inventory : MonoBehaviour
                 case 1:
                     // Knife
                     fr.runScript = false;
+                    ax.runScript = false;
                     break;
                 case 2:
                     // Fishing rod
                     fr.runScript = true;
+                    ax.runScript = false;
                     break;
                 case 3:
                     // Axe
                     if (fr != null && fr.gameObject != null) fr.enabled = false;
                     fr.runScript = false;
+                    ax.runScript = true;
                     break;
                 case 4:
                     // Shovel
                     if (fr != null && fr.gameObject != null) fr.enabled = false;
                     fr.runScript = false;
+                    ax.runScript = false;
                     break;
                 default:
                     // Disable fishing rod script and clean up
                     fr.runScript = false;
+                    ax.runScript = false;
                     break;
             }
 
@@ -1466,8 +1473,11 @@ public class Player_Inventory : MonoBehaviour
                     break;
                 case 3:
                     Debug.Log("Axe used");
-                    anim.SetInteger("toolUsed", 1);
-                    //anim.SetInteger("toolUsed", 3);
+                    anim.SetInteger("toolUsed", 3);
+
+                    ax.AxeStrike();
+                    // Stop the player moving for x amount of seconds
+                    StartCoroutine(StopMovement(0.8f));
                     StartCoroutine(ActivateAttackRadius(2.0f, 20)); // Active for 2 seconds
                     break;
                 case 4:
@@ -1549,29 +1559,36 @@ public class Player_Inventory : MonoBehaviour
                 attackRadiusScript.damageToCause = damage;
             }
 
-            // Stop the player moving for x amount of seconds
-            // if (player != null)
-            // {
-            //     var movement = player.GetComponent<Player_Movement>();
-            //     var sounds = player.GetComponent<Player_SoundEffects>();
-            //     if (movement != null) movement.enabled = false;
-            //     if (sounds != null) sounds.enabled = false;
-            //     anim.SetInteger("MovementPhase", 0); // Set to idle
-            // }
-
             // Wait for the specified duration
             yield return new WaitForSeconds(duration);
 
             playerAttackRadius.SetActive(false);
+        }
+    }
 
-            // Debug.Log("Attack radius deactivated");
-            // if (player != null)
-            // {
-            //     var movement = player.GetComponent<Player_Movement>();
-            //     var sounds = player.GetComponent<Player_SoundEffects>();
-            //     if (movement != null) movement.enabled = true;
-            //     if (sounds != null) sounds.enabled = true;
-            // }
+    private System.Collections.IEnumerator StopMovement(float duration)
+    {
+        Animator anim = player != null ? player.GetComponent<Animator>() : null;
+
+        if (player != null)
+        {
+            var movement = player.GetComponent<Player_Movement>();
+            var sounds = player.GetComponent<Player_SoundEffects>();
+            if (movement != null) movement.enabled = false;
+            if (sounds != null) sounds.enabled = false;
+            anim.SetInteger("MovementPhase", 0);
+        }
+
+        // Wait for the specified duration
+        yield return new WaitForSeconds(duration);
+
+        if (player != null)
+        {
+            var movement = player.GetComponent<Player_Movement>();
+            var sounds = player.GetComponent<Player_SoundEffects>();
+            if (movement != null) movement.enabled = true;
+            if (sounds != null) sounds.enabled = true;
+            anim.SetInteger("MovementPhase", 0);
         }
     }
 

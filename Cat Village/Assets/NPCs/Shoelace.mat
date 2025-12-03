@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-5967014368333170837
+--- !u!114 &-3849460969324805929
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: PlayerSavedMaterial
+  m_Name: Shoelace
   m_Shader: {fileID: -6465566751694194690, guid: 20f27931e11209e419ed23e970964b7f, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -50,15 +50,15 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _FurPattern:
-        m_Texture: {fileID: 2800000, guid: 8746b47ce9d965d49bbbe98939d48f72, type: 3}
+        m_Texture: {fileID: 2800000, guid: 3b846b8dc59d3c3419c200c5453793ec, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NoseWhiteImage:
-        m_Texture: {fileID: 2800000, guid: 1b1ea589814116f4bbbdb05e71bb295c, type: 3}
+        m_Texture: {fileID: 2800000, guid: f1445d17b0280e945a4255550d6c64c4, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NuzzleWhiteImage:
-        m_Texture: {fileID: 2800000, guid: f88f7c5ba9b63e04a94f33f085e39e2c, type: 3}
+        m_Texture: {fileID: 2800000, guid: ed26a7133912d70409c6e03b25943dad, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SampleTexture2D_024de86727e74d0cbcb89f2404d81599_Texture_1_Texture2D:
@@ -81,20 +81,16 @@ Material:
         m_Texture: {fileID: 2800000, guid: f1445d17b0280e945a4255550d6c64c4, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _TortoiseImage:
-        m_Texture: {fileID: 2800000, guid: 0ff24b53477af9343866b09f107c3ac9, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _TummyWhiteImage:
-        m_Texture: {fileID: 2800000, guid: f1445d17b0280e945a4255550d6c64c4, type: 3}
+        m_Texture: {fileID: 2800000, guid: dd2bcc504265c794480dcebc36409cef, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _UnderTailWhiteImage:
-        m_Texture: {fileID: 2800000, guid: f1445d17b0280e945a4255550d6c64c4, type: 3}
+        m_Texture: {fileID: 2800000, guid: 60f1e596883d94942bcd944df9cff2e6, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _WholeBodyWhiteImage:
-        m_Texture: {fileID: 2800000, guid: 5c4acae1686479e49bcd9c3f2e7b68cc, type: 3}
+        m_Texture: {fileID: 2800000, guid: b4d26638b1f33c34bb3f8f2eb24946ea, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -114,10 +110,9 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     m_Colors:
-    - _BaseFurColor: {r: 0, g: 0, b: 0, a: 0}
+    - _BaseFurColor: {r: 0.74509805, g: 0.3921569, b: 0, a: 0}
     - _ClothingBottomColour: {r: 1, g: 1, b: 1, a: 1}
     - _ClothingTopColour: {r: 1, g: 1, b: 1, a: 1}
-    - _EyeColor: {r: 0.5529412, g: 0.6039216, b: 0.25490198, a: 0}
-    - _TortoiseColour: {r: 0.74509805, g: 0.3921569, b: 0, a: 0}
+    - _EyeColor: {r: 0.53333336, g: 0.23137257, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
