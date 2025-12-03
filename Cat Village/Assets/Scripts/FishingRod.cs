@@ -26,12 +26,14 @@ public class FishingRod : MonoBehaviour
 
     public float multi = 0.4f;
     public Renderer rodRenderer;
+    public Player_SoundEffects playerSoundEffects;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
         anim = player != null ? player.GetComponent<Animator>() : null;
+        playerSoundEffects = player.GetComponent<Player_SoundEffects>();
 
         // Create and configure the fishing line
         fishingLine = gameObject.AddComponent<LineRenderer>();
@@ -59,6 +61,7 @@ public class FishingRod : MonoBehaviour
 
             if (hasCasted)
             {
+                //playerSoundEffects.FishingRod_Cast();
                 FixFishingRod();
 
                 //TESTING
@@ -181,9 +184,10 @@ public class FishingRod : MonoBehaviour
     public void Cast()
     {
         // Cast the fishing rod
-        //Debug.Log("Fishing rod cast!");
+        // Debug.Log("Fishing rod cast!");
         if (waterInfront)
         {
+            playerSoundEffects.FishingRod_Cast(); // kind of repeaty- will fix later
             hasCasted = true;
             CastLure();
             CastIdle();
@@ -196,6 +200,7 @@ public class FishingRod : MonoBehaviour
         if (anim != null)
         {
             anim.SetBool("castSuccess", true);
+            //playerSoundEffects.FishingRod_Cast();
         }
     }
 
@@ -205,6 +210,7 @@ public class FishingRod : MonoBehaviour
         if (anim != null)
         {
             anim.SetBool("reelIn", true);
+            playerSoundEffects.FishingRod_Reel();
         }
         isReelingIn = true;
         // isCasted is true, and isReelingIn is true.
@@ -218,6 +224,7 @@ public class FishingRod : MonoBehaviour
         hasCasted = false;
         isReelingIn = false;
         anim.SetInteger("toolUsed", 0);
+        playerSoundEffects.FishingRod_StopReel();
         UncastLure();
         if (fishingRod != null)
         {
@@ -275,6 +282,8 @@ public class FishingRod : MonoBehaviour
         if (lureInstance != null)
         {
             lureInstance.transform.position = targetPos;
+            //play lure sound effect
+            playerSoundEffects.FishingRod_Lure();
         }
     }
 

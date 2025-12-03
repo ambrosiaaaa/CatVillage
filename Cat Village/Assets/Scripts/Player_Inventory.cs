@@ -1407,13 +1407,13 @@ public class Player_Inventory : MonoBehaviour
                     break;
                 case 3:
                     // Axe
-                    if (fr != null && fr.gameObject != null) fr.enabled = false;
+                    //if (fr != null && fr.gameObject != null) fr.enabled = false;
                     fr.runScript = false;
                     ax.runScript = true;
                     break;
                 case 4:
                     // Shovel
-                    if (fr != null && fr.gameObject != null) fr.enabled = false;
+                    //if (fr != null && fr.gameObject != null) fr.enabled = false;
                     fr.runScript = false;
                     ax.runScript = false;
                     break;
@@ -1450,6 +1450,26 @@ public class Player_Inventory : MonoBehaviour
         }
     }
 
+    public int ReturnCurrentToolTypeID()
+    {
+        if (isHoldingItem)
+        {
+            Item itemScript = activeToolObject.GetComponent<Item>();
+            if (itemScript != null)
+            {
+                return itemScript.toolId;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
     public void UseTool(int toolId)
     {
         // Implement tool usage logic based on toolId
@@ -1472,10 +1492,11 @@ public class Player_Inventory : MonoBehaviour
                     fr.Cast();
                     break;
                 case 3:
-                    Debug.Log("Axe used");
+                    //Debug.Log("Axe used");
+                    ax.AxeStrike();
                     anim.SetInteger("toolUsed", 3);
 
-                    ax.AxeStrike();
+                    //ax.AxeStrike();
                     // Stop the player moving for x amount of seconds
                     StartCoroutine(StopMovement(0.8f));
                     StartCoroutine(ActivateAttackRadius(2.0f, 20)); // Active for 2 seconds

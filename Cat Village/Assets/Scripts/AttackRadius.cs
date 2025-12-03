@@ -7,6 +7,7 @@ public class AttackRadius : MonoBehaviour
     public GameObject character; // Either player or NPC using this attack radius
     public bool isPlayer = false; // Is this the player's attack radius?
     public int damageToCause = 0;
+    public bool struckNPC = false;
 
     // Player's health script
 
@@ -44,10 +45,9 @@ public class AttackRadius : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
     }
 
-    void OnTriggerEnter(Collider other)
+    public void OnTriggerEnter(Collider other)
     {
         if (isPlayer)
         {
@@ -58,6 +58,7 @@ public class AttackRadius : MonoBehaviour
                 npc = other.GetComponent<NPC>();
 
                 DamageNPC(npc, damageToCause); // Example damage value
+                struckNPC = true;
             }
         }
         else
@@ -69,11 +70,12 @@ public class AttackRadius : MonoBehaviour
                 // This will run every frame while the player is in range
                 // You can add logic here for NPC attacking player
                 // For example: gameManager.GetComponent<GameManager>().NPCTargetInRange(character, other.gameObject);
+                struckNPC = false;
             }
         }
     }
 
-    void OnTriggerExit(Collider other)
+    public void OnTriggerExit(Collider other)
     {
         if (isPlayer)
         {
@@ -81,6 +83,8 @@ public class AttackRadius : MonoBehaviour
             if (other.CompareTag("NPC"))
             {
                 Debug.Log("NPC left player's attack range: " + other.name);
+                //Return bool that a NPC has been struck
+                struckNPC = false;
                 npc = null;
             }
         }
@@ -92,6 +96,7 @@ public class AttackRadius : MonoBehaviour
                 Debug.Log("Player left NPC's attack range");
                 // You can add logic here for when player leaves NPC's range
                 // For example: gameManager.GetComponent<GameManager>().NPCTargetExited(character, other.gameObject);
+                struckNPC = false;
             }
         }
     }
@@ -103,6 +108,4 @@ public class AttackRadius : MonoBehaviour
             npc.currentHealth -= dmg;
         }
     }
-    
-    
 }

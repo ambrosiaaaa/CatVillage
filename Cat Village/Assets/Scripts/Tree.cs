@@ -14,6 +14,9 @@ public class Tree : MonoBehaviour
     private Renderer[] topRenderers;
 
     public GameObject logPrefab; // Prefab for the log to spawn
+    public float regenTimer;
+    public float remainingTime = 0f;
+    public float regenTime = 300f; // 5 minutes to regenerate one hit
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -38,6 +41,29 @@ public class Tree : MonoBehaviour
         if (hits <= 0 && !isChopped)
         {
             ChopDownTree();
+        }
+
+        if(hits > 0 &&!isChopped)
+        {
+            RegenerateHits();
+        }
+    }
+
+    public void RegenerateHits()
+    {
+        //Reset hits to 3 over time.
+
+        if(hits < 3)
+        {
+            regenTimer += Time.deltaTime;
+            remainingTime = regenTime - regenTimer;
+            //Once it has been 5 irl minutes, reset hits to 3
+            if (regenTimer >= regenTime)
+            {
+                hits++;
+                regenTimer = 0f;
+                remainingTime = regenTime;
+            }
         }
     }
 
