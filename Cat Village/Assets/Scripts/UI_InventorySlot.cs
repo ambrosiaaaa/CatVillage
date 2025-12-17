@@ -12,6 +12,8 @@ public class UI_InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExi
     public bool isTopSlot = false;
     public bool isBottomsSlot = false;
     public Player_Outfitter playerOutfitter; // Reference to the Player_Outfitter script
+    public Shovel shovelScript; // Reference to the Shovel script
+    public CaughtObj caughtObjScript; // Reference to the CaughtObj script
 
     void Start()
     {
@@ -21,9 +23,15 @@ public class UI_InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExi
             if (gm != null)
             {
                 playerInventory = gm.GetComponent<Player_Inventory>();
+                shovelScript = gm.GetComponent<Shovel>();
+                caughtObjScript = gm.GetComponent<CaughtObj>();
                 if (playerInventory == null)
                 {
                     Debug.LogWarning("Player_Inventory component not found on Game Manager.");
+                }
+                if(shovelScript == null)
+                {
+                    Debug.LogWarning("Shovel component not found on Game Manager.");
                 }
             }
             else
@@ -52,10 +60,51 @@ public class UI_InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        isHovering = true;
-        if (playerInventory != null)
+        if(playerInventory.isBuryingItem)
         {
-            playerInventory.ShowInventoryToolTip(slotIndex);
+            int activeToolSlotIndex = playerInventory.inventorySlots.Length + playerInventory.activeToolIndex;
+            if (isToolbeltSlot && playerInventory.activeToolIndex < 4 && slotIndex == activeToolSlotIndex)
+            {
+                // Make sure tooltip is hidden if hovering over active tool slot
+                // Also make sure you cannot bury the active tool
+                playerInventory.HideToolTip();
+                return; // Exit early to avoid showing bury tooltip
+            }
+        }
+
+        isHovering = true;
+        if(playerInventory.isBuryingItem)
+        {
+            // Show bury tool tip
+            if (playerInventory != null)
+            {
+                // Check if the toolbelt slot is the active tool- and if it matches the current slot we are hovering over
+                // Calculate the active tool slot index: inventorySlots.Length + activeToolIndex
+                int activeToolSlotIndex = playerInventory.inventorySlots.Length + playerInventory.activeToolIndex;
+                if (isToolbeltSlot && playerInventory.activeToolIndex < 4 && slotIndex == activeToolSlotIndex)
+                {
+                    // Make sure tooltip is hidden if hovering over active tool slot
+                    // Also make sure you cannot bury the active tool
+                    playerInventory.HideToolTip();
+                    // Do not add burying logic here
+                }
+                else
+                {
+                    playerInventory.ShowBuryToolTip(slotIndex);
+                    playerInventory.etoDropLabel.text = "Press B to bury item";
+                    playerInventory.pToPlaceLabel.text = "";
+                }
+            }
+        }
+        else
+        {
+            // Show normal tool tip
+            if (playerInventory != null)
+            {
+                playerInventory.ShowInventoryToolTip(slotIndex);
+                playerInventory.etoDropLabel.text = "Press E to drop item";
+                playerInventory.pToPlaceLabel.text = "Press P to place item";
+            }
         }
     }
 
@@ -70,8 +119,9 @@ public class UI_InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        // If contains an item, pick up item or drop item
-        if (playerInventory != null && eventData.button == PointerEventData.InputButton.Left)
+        // If contains an item, pic
+        // Also make sure we are not burying an item!k         
+        if (playerInventory != null && eventData.button == PointerEventData.InputButton.Left && !playerInventory.isBuryingItem)
         {
             if (playerInventory.tempSlot.item != null && playerInventory.slots[slotIndex].item != null)
             {
@@ -163,6 +213,39 @@ public class UI_InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExi
             if (Input.GetKeyDown(KeyCode.E))
             {
                 playerInventory.RemoveItemFromInventory(slotIndex);
+            }
+
+            if (playerInventory.isBuryingItem)
+            {
+                int activeToolSlotIndex = playerInventory.inventorySlots.Length + playerInventory.activeToolIndex;
+                if (playerInventory.activeToolIndex < 4 && slotIndex != activeToolSlotIndex)
+                {
+                    // If not hovering over active toolbelt slot, allow burying
+                    if (Input.GetKeyDown(KeyCode.B))
+                    {
+                        // Get item data from this slotIndex
+                        GameObject item = playerInventory.slots[slotIndex].itemObject;
+
+                        item.SetActive(true);
+
+                        shovelScript.SelectObjectToBury(item);
+
+                        shovelScript.BuryHole();
+                        
+                        // Remove item from inventory
+                        //THIS DOES NOT WORK
+                        playerInventory.RemoveItemForBurial(slotIndex);
+                        
+                        playerInventory.HideInventory(); // Hide inventory UI
+                        shovelScript.buryItemUI.SetActive(false); // Hide bury item UI
+                        
+                        // Unfocus camera
+                        shovelScript.StartCoroutine(caughtObjScript.MoveCameraToOldPosition());
+                        // Allow tool swapping again
+                        playerInventory.canSwapTool = true;
+                        playerInventory.isBuryingItem = false;
+                    }
+                } 
             }
         }
 

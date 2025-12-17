@@ -50,13 +50,25 @@ public class Soil : MonoBehaviour
 
     public void BuryObject(GameObject obj)
     {
+        // Validate input object
+        if (obj == null)
+        {
+            Debug.LogWarning($"BuryObject called with null on soil '{name}'");
+            return;
+        }
+
         if (buriedObject == null)
         {
             // Only bury if there's no object already buried
+            Debug.Log($"Burying object '{obj.name}' on soil '{name}'");
             buriedObject = obj;
-            obj.SetActive(false); // Hide the object when buried
+            // Hide the object and snap it to soil position
+            buriedObject.SetActive(false);
             buriedObject.transform.position = transform.position;
-            buriedObject.SetActive(true); // Hide the object buried, keep true for testing
+        }
+        else
+        {
+            Debug.LogWarning($"Soil '{name}' already has a buried object '{buriedObject.name}'. Skipping bury.");
         }
         CheckIfContains();
     }

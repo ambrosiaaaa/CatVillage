@@ -19,6 +19,7 @@ public class Player_Inventory : MonoBehaviour
     public GameObject[] toolbeltSlots; // Array to hold toolbelt slot GameObjects
     public GameObject activeToolUI;
     public int activeToolIndex = 4; // If 4, no active tool, maximum of 4.
+    public bool canSwapTool = true;
 
     [Header("Outfit Slots")]
     public GameObject headSlot;
@@ -44,6 +45,8 @@ public class Player_Inventory : MonoBehaviour
     public TMPro.TMP_Text itemNameText;
     public TMPro.TMP_Text itemDescriptionText;
     public TMPro.TMP_Text itemTypeText;
+    public TMPro.TMP_Text etoDropLabel;
+    public TMPro.TMP_Text pToPlaceLabel;
     public TMPro.TMP_Text food_itemNameText;
     public TMPro.TMP_Text food_itemDescriptionText;
     public TMPro.TMP_Text food_itemTypeText;
@@ -53,6 +56,9 @@ public class Player_Inventory : MonoBehaviour
     public FishingRod fr;
     public Axe ax;
     public Shovel shov;
+
+    [Header("Bury screen UI")]
+    public bool isBuryingItem = false;
 
     public class InventorySlot
     {
@@ -108,7 +114,7 @@ public class Player_Inventory : MonoBehaviour
             inventoryToolTip.SetActive(false);
         }
         // Hide pickup popup UI on load
-        if (pickupPopupUI != null)
+        if (pickupPopupUI != null || isBuryingItem)
         {
             pickupPopupUI.SetActive(false);
         }
@@ -165,9 +171,12 @@ public class Player_Inventory : MonoBehaviour
     void Update()
     {
         // Toolbelt functionality
-        Toolbelt_SwapTool();
-        Toolbelt_MoveActiveIcon();
-        Toolbelt_DisplayTool();
+        if(canSwapTool)
+        {
+            Toolbelt_SwapTool();
+            Toolbelt_MoveActiveIcon();
+            Toolbelt_DisplayTool();
+        }
 
         // Inventory icon movement
         Inventory_FollowMouse();
@@ -330,7 +339,7 @@ public class Player_Inventory : MonoBehaviour
         return -1;
     }
 
-    void OpenCloseInventory()
+    public void OpenCloseInventory()
     {
         //if press TAB, toggle inventory UI
         if (Input.GetKeyDown(KeyCode.Tab) && inventoryUI != null)
@@ -351,10 +360,59 @@ public class Player_Inventory : MonoBehaviour
         }
     }
 
+    public void ShowInventory()
+    {
+        inventoryUI.SetActive(true);
+        // Enable/disable Player_Movement script
+        if (player != null)
+        {
+            var movement = player.GetComponent<Player_Movement>();
+            var sounds = player.GetComponent<Player_SoundEffects>();
+            if (movement != null && sounds != null)
+            {
+                sounds.enabled = false;
+                movement.enabled = false;
+            }
+        }
+    }
+
+    public void HideInventory()
+    {
+        inventoryUI.SetActive(false);
+        // Enable/disable Player_Movement script
+        if (player != null)
+        {
+            var movement = player.GetComponent<Player_Movement>();
+            var sounds = player.GetComponent<Player_SoundEffects>();
+            if (movement != null && sounds != null)
+            {
+                sounds.enabled = true;
+                movement.enabled = true;
+            }
+        }
+    }
+
+    public void ShowBuryToolTip(int slotIndex)
+    {
+        //buryToolTip
+        if (slots[slotIndex].item != null)
+        {
+                inventoryToolTip.SetActive(true);
+                itemNameText.text = slots[slotIndex].item.itemName;
+                itemDescriptionText.text = slots[slotIndex].item.itemDescription;
+                itemTypeText.text = slots[slotIndex].item.itemType;
+                inventoryToolTip.transform.position = Input.mousePosition + toolTipOffset;
+                //etoDropLabel.text = "Press B to bury item";
+                //pToPlaceLabel.text = "";
+        }
+        else
+        {
+            inventoryToolTip.SetActive(false);
+        }
+    }
+
     public void ShowInventoryToolTip(int slotIndex)
     {
-        //Debug.Log($"ShowInventoryToolTip called for slot {slotIndex}, item: {slots[slotIndex].item}");
-
         if (slots[slotIndex].item != null)
         {
             // Check if item is food
@@ -376,6 +434,8 @@ public class Player_Inventory : MonoBehaviour
                 itemDescriptionText.text = slots[slotIndex].item.itemDescription;
                 itemTypeText.text = slots[slotIndex].item.itemType;
                 inventoryToolTip.transform.position = Input.mousePosition + toolTipOffset;
+                //etoDropLabel.text = "Press E to drop item";
+                //pToPlaceLabel.text = "Press P to place item";
                 //Make sure food tooltip is hidden
                 foodToolTip.SetActive(false);
             }
@@ -584,6 +644,22 @@ public class Player_Inventory : MonoBehaviour
                 inventoryTooFullPopupActive = true;
                 inventoryTooFullPopupCanvasGroup.alpha = 1f;
             }
+    }
+
+    public void RemoveItemForBurial(int slotIndex)
+    {
+        InventorySlot slot = slots[slotIndex];
+        if (slot.item != null)
+        {
+            //Debug.Log($"Removing item: {slot.item.itemName} from inventory slot: {slot.slot.name}");
+            slot.item = null;
+            slot.itemObject = null;
+            ClearSlotIcon(slot);
+        }
+        else
+        {
+            Debug.LogWarning("No item to remove in slot: " + slot.slot.name);
+        }
     }
 
     public void RemoveItemFromInventory(int slotIndex, float rotationY = 0f)
@@ -1421,6 +1497,12 @@ public class Player_Inventory : MonoBehaviour
                     ax.runScript = false;
                     shov.runScript = true;
                     break;
+                case 0:
+                    // No tool
+                    fr.runScript = false;
+                    ax.runScript = true;
+                    shov.runScript = false;
+                    break;
                 default:
                     // Disable fishing rod script and clean up
                     fr.runScript = false;
@@ -1452,6 +1534,10 @@ public class Player_Inventory : MonoBehaviour
         {
             // No tool to display or slot is empty
             isHoldingItem = false;
+            // Set all item scripts to false
+            fr.runScript = false;
+            ax.runScript = false;
+            shov.runScript = false;
         }
     }
 
@@ -1587,7 +1673,21 @@ public class Player_Inventory : MonoBehaviour
         }
         // If all slots are occupied, return true
         return true;
-    
+    }
+
+    public bool CheckInventoryHasAtleastOneItem()
+    {
+        // For each inventory slot in the inventory slots...
+        foreach (InventorySlot slot in slots)
+        {
+            // If any slot is occupied, return true
+            if (slot.item != null)
+            {
+                return true; // Found an occupied slot
+            }
+        }
+        // If all slots are empty, return false
+        return false;
     }
 
     // Coroutine to activate attack radius for a set duration

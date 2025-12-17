@@ -23,12 +23,15 @@ public class CaughtObj : MonoBehaviour
     public Button addToInventoryButton; // Button to add item to inventory
     public bool isInventoryFull = false;
 
+    public Shovel shovelScript;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
         player_Inventory = this.GetComponent<Player_Inventory>();
         anim = player.GetComponent<Animator>();
+        shovelScript = this.gameObject.GetComponent<Shovel>();
         HideMenu();
     }
 
@@ -51,6 +54,7 @@ public class CaughtObj : MonoBehaviour
     
         // Disable any tool in hand of the player
         player_Inventory.activeToolIndex = 4; // Set to unarmed
+        player_Inventory.canSwapTool = false;
 
         // Make player unable to move while holding object & play catch animation
         var movement = player.GetComponent<Player_Movement>();
@@ -62,6 +66,13 @@ public class CaughtObj : MonoBehaviour
         anim.SetInteger("toolUsed", 0);
         anim.SetBool("catch", true);
         anim.SetBool("holdTool", false);
+
+        // Hide bury UI
+        shovelScript.buryPopupUI.SetActive(false);
+
+        // Hide all tools
+        player_Inventory.activeToolIndex = 0; // Unarmed
+        player_Inventory.Toolbelt_DisplayTool();
 
         // Rotate the player to face the camera
         player.transform.rotation = Quaternion.Euler(0, camera.transform.eulerAngles.y+ 180, 0);
@@ -120,6 +131,37 @@ public class CaughtObj : MonoBehaviour
         }
     }
 
+    public void FocusCameraBuryObject()
+    {
+        // Make player unable to move while burying object
+        var movement = player.GetComponent<Player_Movement>();
+        var sounds = player.GetComponent<Player_SoundEffects>();
+        if (movement != null) movement.enabled = false;
+        if (sounds != null) sounds.enabled = false;
+
+        anim.SetInteger("MovementPhase", 0);
+
+        // Rotate the player to face the camera
+        player.transform.rotation = Quaternion.Euler(0, camera.transform.eulerAngles.y+ 180, 0);
+
+        // Store camera's old position and rotation
+        camPos = camera.transform.position;
+        camRot = camera.transform.rotation;
+
+        // Disable the camera's follow script
+        Player_Camera pc = camera.GetComponent<Player_Camera>();
+        if (pc != null)
+        {
+            pc.enabled = false;
+        }
+
+        // Move camera to focus on player holding object gradually
+        StartCoroutine(MoveCameraToFocus());
+
+        // UI STUFF HERE
+
+    }
+
     void HideMenu()
     {
         UIMenu.SetActive(false);
@@ -132,6 +174,8 @@ public class CaughtObj : MonoBehaviour
 
     public void TossObject()
     {
+        // Hide bury UI
+        shovelScript.buryPopupUI.SetActive(false);
         // Re-enable camera movement
         StartCoroutine(MoveCameraToOldPosition());
         // Hide menu
@@ -142,6 +186,7 @@ public class CaughtObj : MonoBehaviour
         if (movement != null) movement.enabled = true;
         if (sounds != null) sounds.enabled = true;
         anim.SetBool("catch", false);
+        player_Inventory.canSwapTool = true;
 
         // Toss object stuff here...
         // Detach object from hand
@@ -176,6 +221,8 @@ public class CaughtObj : MonoBehaviour
 
     public void AddToInventory()
     {
+        // Hide bury UI
+        shovelScript.buryPopupUI.SetActive(false);
         // Re-enable camera movement
         StartCoroutine(MoveCameraToOldPosition());
         // Hide menu
@@ -186,6 +233,7 @@ public class CaughtObj : MonoBehaviour
         if (movement != null) movement.enabled = true;
         if (sounds != null) sounds.enabled = true;
         anim.SetBool("catch", false);
+        player_Inventory.canSwapTool = true;
 
         // Add object to inventory stuff here...
         // Get Item script from object
@@ -196,6 +244,9 @@ public class CaughtObj : MonoBehaviour
 
     public void ReburyItem()
     {
+        // Hide bury UI
+        shovelScript.buryPopupUI.SetActive(false);
+        Debug.Log("Reburying item...");
         // Re-enable camera movement
         StartCoroutine(MoveCameraToOldPosition());
         // Hide menu
@@ -206,14 +257,63 @@ public class CaughtObj : MonoBehaviour
         if (movement != null) movement.enabled = true;
         if (sounds != null) sounds.enabled = true;
         anim.SetBool("catch", false);
+        player_Inventory.canSwapTool = true;
 
         // Rebury object stuff here...
         // Detach object from hand
         GameObject obj = handBone.transform.GetChild(0).gameObject;
+
+        Debug.Log("ITem to rebury: " + obj.name);
         obj.transform.SetParent(null);
 
         // Rebury in nearest soil using the Shovel script mechanism...
-/// TODOOOOO
+        shovelScript.SelectObjectToBury(obj);
+
+        shovelScript.BuryHole();
+
+        //!!!!!!!!!!!!!! Probably should add thing for player to requip shovel here
+    }
+
+    // Rebury in specific hole
+    public void ReburyItemInSoil(Soil soil)
+    {
+        Debug.Log("Reburying item in specific soil...");
+        // Re-enable camera movement
+        StartCoroutine(MoveCameraToOldPosition());
+        // Hide menu
+        HideMenu();
+        // Renable player movement
+        var movement = player.GetComponent<Player_Movement>();
+        var sounds = player.GetComponent<Player_SoundEffects>();
+        if (movement != null) movement.enabled = true;
+        if (sounds != null) sounds.enabled = true;
+        anim.SetBool("catch", false);
+        player_Inventory.canSwapTool = true;
+
+        // Rebury object stuff here...
+        // Detach object from hand
+        if (soil == null)
+        {
+            Debug.LogError("ReburyItemInSoil called with NULL soil reference");
+            return;
+        }
+
+        if (handBone.transform.childCount == 0)
+        {
+            Debug.LogError("ReburyItemInSoil: No object in hand to rebury");
+            return;
+        }
+
+        GameObject obj = handBone.transform.GetChild(0).gameObject;
+        Debug.Log($"ReburyItemInSoil: soil='{soil.name}' (enabled={soil.isActiveAndEnabled}), obj='{obj.name}' (active={obj.activeSelf})");
+        obj.transform.SetParent(null);
+        // Disable collider to avoid immediate physics interactions
+        var col = obj.GetComponent<Collider>();
+        if (col != null) col.enabled = false;
+
+        // Rebury in specified soil
+        soil.BuryObject(obj);
+        Debug.Log($"After BuryObject: soil.buriedObject='{(soil.buriedObject != null ? soil.buriedObject.name : "NULL")}'");
     }
 
     void UpdateMenuInfo(string name, string description, bool isEvil)
@@ -226,8 +326,11 @@ public class CaughtObj : MonoBehaviour
         }
     }
 
-        private IEnumerator MoveCameraToFocus()
+    private IEnumerator MoveCameraToFocus()
     {
+        // Hide bury UI
+        shovelScript.buryPopupUI.SetActive(false);
+
         float duration = 1f; // Time to move camera
         float elapsedTime = 0f;
         
@@ -252,8 +355,11 @@ public class CaughtObj : MonoBehaviour
         camera.transform.position = targetPos;
     }
 
-    private IEnumerator MoveCameraToOldPosition()
+    public IEnumerator MoveCameraToOldPosition()
     {
+        // Hide bury UI
+        shovelScript.buryPopupUI.SetActive(false);
+        
         float duration = 1f; // Time to move camera back
         float elapsedTime = 0f;
         

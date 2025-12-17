@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using TMPro;
 
 public class Shovel : MonoBehaviour
 {
@@ -21,10 +22,18 @@ public class Shovel : MonoBehaviour
     public AttackRadius attackRadiusScript;
     public Soil soilScript;
     public CaughtObj caughtObjScript;
+    public Player_Inventory player_Inventory;
 
     public GameObject holePrefab; // Prefab of hole when dug up
     public GameObject dugUpObject;
     public GameObject catchTarget;
+    public Soil latestSoil;
+
+    //
+    public GameObject objToBury;
+    public GameObject buryPopupUI;
+    public TMPro.TMP_Text buryPopupText;
+    public GameObject buryItemUI;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -34,6 +43,11 @@ public class Shovel : MonoBehaviour
         playerAnimator = player != null ? player.GetComponent<Animator>() : null;
         playerSoundEffects = player.GetComponent<Player_SoundEffects>();
         attackRadiusScript = player.transform.Find("AttackRadius").GetComponent<AttackRadius>();
+        player_Inventory = this.GetComponent<Player_Inventory>();
+
+        // Hide bury text first
+        buryPopupUI.SetActive(false);
+        buryItemUI.SetActive(false);
     }
 
     // Update is called once per frame
@@ -43,12 +57,25 @@ public class Shovel : MonoBehaviour
         {
             RunScript();
         }
+        else
+        {
+            // If not running, hide everything
+            buryPopupUI.SetActive(false);
+            buryItemUI.SetActive(false);
+            // Note: Do NOT clear latestSoil or objToBury here.
+            // Reburial flows (e.g., CaughtObj.ReburyItem) may set objToBury and then call BuryHole()
+            // while the shovel script is inactive. Clearing these values here causes race conditions
+            // and prevents BuryHole from seeing the selected object/soil.
+        }
     }
 
     public void RunScript()
     {
         GetShovel();
-        SoilCheck();
+        if(!player_Inventory.isBuryingItem)
+        {
+            SoilCheck();
+        }
     }
 
     void SoilCheck()
@@ -75,6 +102,9 @@ public class Shovel : MonoBehaviour
                     landClear = false;
                     currentSoil = hit.collider.gameObject;
                     soilScript = currentSoil.GetComponent<Soil>(); // Get soil script from lump of soil
+                    latestSoil = soilScript;
+
+                    CheckHole(soilScript);
                 }
                 else
                 {
@@ -83,6 +113,8 @@ public class Shovel : MonoBehaviour
                     landClear = false;
                     isSoilInfront = false;
                     currentSoil = null;
+                    // Hide bury popup if land is clear
+                    buryPopupUI.SetActive(false);
                 }
             }
             else
@@ -91,8 +123,56 @@ public class Shovel : MonoBehaviour
                 landClear = true;
                 isSoilInfront = false;
                 currentSoil = null;
+
+                // Hide bury popup if land is clear
+                buryPopupUI.SetActive(false);
             }
         }
+    }
+
+    public void CheckHole(Soil soil)
+    {
+        // When standing infront of soil, display the text UI pop up to ask if player wants to bury an item
+        if (soil.buriedObject == null)
+        {
+            // If hole is empty...
+            if (player_Inventory.CheckInventoryHasAtleastOneItem())
+            {
+                // If player has atleast one item to bury...
+                buryPopupUI.SetActive(true);
+                buryPopupText.transform.position = soil.gameObject.transform.position + Vector3.up * 0.75f; // Position text above soil
+                buryPopupText.text = "Press B to bury an item";
+
+                //if B pressed, open inventory to select item to bury
+                if(Input.GetKeyDown(KeyCode.B))
+                {
+                    // Hide text
+                    buryPopupUI.SetActive(false);
+                    // Open inventory
+                    player_Inventory.ShowInventory();
+                    // Focus camera
+                    caughtObjScript.FocusCameraBuryObject();
+                    // BURY ITEM LOGIC...
+                    // stop scroll wheelling, and use latestSoil to bury selected item
+                    player_Inventory.canSwapTool = false;
+                    buryItemUI.SetActive(true);
+                    player_Inventory.isBuryingItem = true;
+                    // If player presses TAB or ESC, close inventory and cancel burying
+                    StartCoroutine(WaitForBuryCancel());
+                }
+                else {
+                    // Allow tool swapping again
+                    player_Inventory.canSwapTool = true;
+                }
+            }
+            else {
+                // If no items to bury, display alternative message
+                buryPopupUI.SetActive(true);
+                buryPopupText.text = "I have no items I can bury...";
+            }
+        }
+        // Need to make sure player can't bury shovel.
+        // Maybe only make inventory slots interactable
     }
 
     void GetShovel()
@@ -124,16 +204,6 @@ public class Shovel : MonoBehaviour
             // Reset the flag when no shovel is present
             hasRecordedOriginalRotation = false;
         }
-    }
-
-   public void DigUp()
-    {
-        
-    }
-
-    public void Bury()
-    {
-        
     }
 
     public void DigHole()
@@ -182,16 +252,67 @@ public class Shovel : MonoBehaviour
         }
     }
 
+    public void SelectObjectToBury(GameObject obj)
+    {
+        objToBury = obj;
+        Debug.Log("Selected object to bury: " + objToBury.name);
+    }
+
     public void BuryHole()
     {
+        // play animation somewhere...
         // If soil is infront of player, they can bury the hole
+        buryPopupUI.SetActive(false);  // Hide popup UI
         if (isSoilInfront)
         {
-            //currentSoil
-
+            // Get currentSoil
+            Soil sl = currentSoil.GetComponent<Soil>();
+            // If there is an object to bury, bury it and keep as hole
+            if (sl.buriedObject != null)
+            {
+                sl.BuryObject(sl.buriedObject);
+            }
+            // If there is no object to bury and we are not reburying...
+            else if (sl.buriedObject == null && objToBury != null)
+            {
+                Debug.Log("Starting burial!!");
+                StartCoroutine(MoveObjToBuryArc(objToBury, catchTarget.transform.position, sl.transform.position, sl));
+            }
+            else if (sl.buriedObject == null)
+            {
+                Destroy(currentSoil);
+            }
+        }
+        // If there is a hole we just dug up that is empty...
+        else if (latestSoil != null && latestSoil.buriedObject == null && objToBury != null)
+        {
+            Debug.Log("Starting burial!!!");
+            StartCoroutine(MoveObjToBuryArc(objToBury, catchTarget.transform.position, latestSoil.transform.position, latestSoil));
         }
     }
 
+    private IEnumerator WaitForBuryCancel()
+    {
+        bool waitingForCancel = true;
+
+        while (waitingForCancel)
+        {
+            if (Input.GetKeyDown(KeyCode.Tab) || Input.GetKeyDown(KeyCode.Escape))
+            {
+                // Close inventory
+                player_Inventory.HideInventory();
+                // Unfocus camera
+                StartCoroutine(caughtObjScript.MoveCameraToOldPosition());
+                // Hide bury item UI
+                buryItemUI.SetActive(false);
+                // Allow tool swapping again
+                player_Inventory.canSwapTool = true;
+                waitingForCancel = false;
+                player_Inventory.isBuryingItem = false;
+            }
+            yield return null; // Wait for next frame
+        }
+    }
 
     private IEnumerator MoveObjInArc(GameObject log, Vector3 startPos, Vector3 endPos)
     {
@@ -202,6 +323,9 @@ public class Shovel : MonoBehaviour
         float arcHeight = 1.5f;
         Vector3 midPoint = (startPos + endPos) / 2f;
         midPoint.y += arcHeight;
+
+        // Hide burial UI
+        buryPopupUI.SetActive(false);
         
         while (elapsedTime < duration)
         {
@@ -229,6 +353,61 @@ public class Shovel : MonoBehaviour
 
         // NOW display object
         caughtObjScript.DisplayCaughtObject(dugUpObject);
+    }
+
+    private IEnumerator MoveObjToBuryArc(GameObject log, Vector3 startPos, Vector3 endPos, Soil soil)
+    {
+        log.SetActive(true); // Ensure object is active for movement
+        // Disable all collisions on the log during flight
+        var logColliders = log.GetComponentsInChildren<Collider>();
+        foreach (var col in logColliders)
+        {
+            if (col != null) col.enabled = false;
+        }
+
+        float duration = 1f; // Time for the arc movement
+        float elapsedTime = 0f;
+        
+        // Calculate arc height (midpoint will be higher)
+        float arcHeight = 1.5f;
+        Vector3 midPoint = (startPos + endPos) / 2f;
+        midPoint.y += arcHeight;
+
+        // Hide burial UI
+        buryPopupUI.SetActive(false);
+        
+        while (elapsedTime < duration)
+        {
+            float t = elapsedTime / duration;
+            
+            // Use quadratic bezier curve for smooth arc
+            Vector3 currentPos = CalculateBezierPoint(t, startPos, midPoint, endPos);
+            log.transform.position = currentPos;
+            
+            // Add some rotation during flight
+            log.transform.Rotate(Vector3.right * (180f * Time.deltaTime));
+            
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        
+        // Ensure final position is exact
+        log.transform.position = endPos;
+        
+
+        // Wait a moment to ensure position is set, then enable physics
+        yield return new WaitForFixedUpdate();
+        
+        // Force position again after physics update
+        log.transform.position = endPos;
+        // Re-enable collisions on the log now that the arc is complete
+        foreach (var col in logColliders)
+        {
+            if (col != null) col.enabled = true;
+        }
+        soil.BuryObject(objToBury);
+        objToBury = null; // Clear references after waiting for animation to end
+        // Do not null out local soil reference
     }
 
     private Vector3 CalculateBezierPoint(float t, Vector3 p0, Vector3 p1, Vector3 p2)
