@@ -184,7 +184,7 @@ public class Tree : MonoBehaviour
         // Spawn log from the tree's position (center/trunk area)
         Vector3 spawnPosition = new Vector3(
             transform.position.x + Random.Range(-0.2f, 0.2f), // Small random offset
-            transform.position.y + Random.Range(0.5f, 1.5f), // Spawn above ground, from trunk area
+            transform.position.y + Random.Range(0.5f, 1.5f), // Spawn arbove ground, from trunk area
             transform.position.z + Random.Range(-0.2f, 0.2f)  // Small random offset
         );
         

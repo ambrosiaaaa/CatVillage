@@ -52,6 +52,7 @@ public class Player_Inventory : MonoBehaviour
     [Header("Tool Scripts")]
     public FishingRod fr;
     public Axe ax;
+    public Shovel shov;
 
     public class InventorySlot
     {
@@ -151,6 +152,7 @@ public class Player_Inventory : MonoBehaviour
 
         fr = this.gameObject.GetComponent<FishingRod>();
         ax = this.gameObject.GetComponent<Axe>();
+        shov = this.gameObject.GetComponent<Shovel>();
 
         playerAttackRadius = player.gameObject.transform.Find("AttackRadius").gameObject;
         if (playerAttackRadius != null)
@@ -541,7 +543,7 @@ public class Player_Inventory : MonoBehaviour
         //Debug.Log($"Bottom slot index: {bottomSlotIndex}, total slots: {slots.Length}");
     }
 
-    void AddItemToInventory(Item item)
+    public void AddItemToInventory(Item item)
     {
         // Find the first empty slot in the inventory
         foreach (InventorySlot slot in slots)
@@ -1399,28 +1401,31 @@ public class Player_Inventory : MonoBehaviour
                     // Knife
                     fr.runScript = false;
                     ax.runScript = false;
+                    shov.runScript = false;
                     break;
                 case 2:
                     // Fishing rod
                     fr.runScript = true;
                     ax.runScript = false;
+                    shov.runScript = false;
                     break;
                 case 3:
                     // Axe
-                    //if (fr != null && fr.gameObject != null) fr.enabled = false;
                     fr.runScript = false;
                     ax.runScript = true;
+                    shov.runScript = false;
                     break;
                 case 4:
                     // Shovel
-                    //if (fr != null && fr.gameObject != null) fr.enabled = false;
                     fr.runScript = false;
                     ax.runScript = false;
+                    shov.runScript = true;
                     break;
                 default:
                     // Disable fishing rod script and clean up
                     fr.runScript = false;
                     ax.runScript = false;
+                    shov.runScript = false;
                     break;
             }
 
@@ -1483,12 +1488,12 @@ public class Player_Inventory : MonoBehaviour
             switch (toolId)
             {
                 case 1:
-                    Debug.Log("Knife used");
+                    //Debug.Log("Knife used");
                     anim.SetInteger("toolUsed", 1);
                     StartCoroutine(ActivateAttackRadius(1.0f, 10)); // Active for 1 second
                     break;
                 case 2:
-                    Debug.Log("Fishing rod used");
+                    //Debug.Log("Fishing rod used");
                     fr.Cast();
                     break;
                 case 3:
@@ -1502,8 +1507,11 @@ public class Player_Inventory : MonoBehaviour
                     StartCoroutine(ActivateAttackRadius(2.0f, 20)); // Active for 2 seconds
                     break;
                 case 4:
-                    Debug.Log("Shovel used");
+                    //Debug.Log("Shovel used");
+                    //play dig animation
                     anim.SetInteger("toolUsed", 4);
+                    StartCoroutine(StopMovement(0.8f));
+                    shov.DigHole();
                     break;
                 default:
                     //Debug.Log("Not a tool.");
@@ -1563,6 +1571,23 @@ public class Player_Inventory : MonoBehaviour
         if (IsBottomSlot(slotIndex) && item.itemType == "Bottoms") return true;
 
         return false;
+    }
+
+    // Checks if inventory is full
+    public bool IsInventoryFull()
+    {
+        // For each inventory slot in the inventory slots...
+        foreach (InventorySlot slot in slots)
+        {
+            // If any slot is empty, return false
+            if (slot.item == null)
+            {
+                return false; // Found an empty slot
+            }
+        }
+        // If all slots are occupied, return true
+        return true;
+    
     }
 
     // Coroutine to activate attack radius for a set duration

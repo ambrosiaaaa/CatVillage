@@ -13,6 +13,7 @@ public class Item : MonoBehaviour
     public float positionOffset = 0.0f; // Offset to adjust item position when held
     public float rotationOffset = 0.0f; // Offset to adjust item rotation when held
     public int toolId = 0; // Unique ID for tools, set to 0 for non-tools
+    public bool isEvil = false; // Is this an evil item?
 
     // Clothing properties
     public Color itemColor = Color.white; // Color of the clothing item

@@ -57,7 +57,7 @@ public class Axe : MonoBehaviour
             float rayDistance = 0.5f; // 0.5 meters in front of player
 
             // Visualize the raycast in the Scene view
-            Debug.DrawRay(rayOrigin, rayDirection * rayDistance, Color.red, 0.5f);
+            //Debug.DrawRay(rayOrigin, rayDirection * rayDistance, Color.red, 0.5f);
 
             RaycastHit hit;
             if (Physics.Raycast(rayOrigin, rayDirection, out hit, rayDistance))
@@ -67,7 +67,6 @@ public class Axe : MonoBehaviour
                 {
                     // Tree found in front of player
                     //Debug.Log("Tree detected: " + hit.collider.gameObject.name);
-                    // Add your tree interaction logic here
                     isTreeInfront = true;
                     currentTree = hit.collider.gameObject;
                     //get the tree's health to display on ui
