@@ -11,6 +11,7 @@ public class Player_SoundEffects : MonoBehaviour
     public float walkPitch = 0.8f;
     public float jogPitch = 1.2f;
     public float runPitch = 2f;
+
     // Get inventory script from player
     public Player_Inventory playerInventory;
 
@@ -25,6 +26,9 @@ public class Player_SoundEffects : MonoBehaviour
     public AudioClip fishingRod_Cast_Clip;
     public AudioClip fishingRod_Reel_Clip;
     public AudioClip fishingRod_Lure_Clip;
+
+    public AudioClip shovel_Dig_Clip;
+    public AudioClip shovel_Bury_Clip;
 
     void Start()
     {
@@ -95,6 +99,18 @@ public class Player_SoundEffects : MonoBehaviour
     {
         toolAudioSource.loop = false;
         toolAudioSource.PlayOneShot(fishingRod_Lure_Clip);
+    }
+
+    public void Shovel_Dig()
+    {
+        toolAudioSource.loop = false;
+        toolAudioSource.PlayOneShot(shovel_Dig_Clip);
+    }
+
+    public void Shovel_Bury()
+    {
+        toolAudioSource.loop = false;
+        toolAudioSource.PlayOneShot(shovel_Bury_Clip);
     }
 
 

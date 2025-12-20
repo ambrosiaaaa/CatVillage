@@ -211,15 +211,19 @@ public class Shovel : MonoBehaviour
         // If land infront is clear, the player can dig a hole 0.5m infront of themself
         if (landClear && !isSoilInfront)
         {
-            //play dig sound effect here too...
+            // Play dig sound effect here...
+            playerSoundEffects.Shovel_Dig();
+            // Instantiate hole prefab infront of player
             Vector3 holePosition = player.transform.position + player.transform.forward * 0.5f;
             holePosition.y = 0.02f;
             Instantiate(holePrefab, holePosition, Quaternion.Euler(0, 0, 0));
         }
         else if (isSoilInfront && !landClear)
         {
-            // if soil is infront of player, they can dig up the buried object
-            // make the soil infront disappear
+            // Play dig sound effect here...
+            playerSoundEffects.Shovel_Dig();
+            // If soil is infront of player, they can dig up the buried object
+            // Make the soil infront disappear
             Debug.Log("Dug up: " + currentSoil);
             //check if soil has buried object or not
             Soil sl = currentSoil.GetComponent<Soil>();
@@ -260,36 +264,48 @@ public class Shovel : MonoBehaviour
 
     public void BuryHole()
     {
-        // play animation somewhere...
         // If soil is infront of player, they can bury the hole
         buryPopupUI.SetActive(false);  // Hide popup UI
         if (isSoilInfront)
         {
+            // Play sound effect...
+            //playerSoundEffects.Shovel_Bury();
             // Get currentSoil
             Soil sl = currentSoil.GetComponent<Soil>();
             // If there is an object to bury, bury it and keep as hole
             if (sl.buriedObject != null)
             {
+                playerSoundEffects.Shovel_Bury();
+                StartCoroutine(MovePlayerToFaceHole(sl));
                 sl.BuryObject(sl.buriedObject);
+                playerAnimator.SetBool("isBury", false);
             }
             // If there is no object to bury and we are not reburying...
             else if (sl.buriedObject == null && objToBury != null)
             {
-                Debug.Log("Starting burial!!");
+                playerSoundEffects.Shovel_Bury();
+                StartCoroutine(MovePlayerToFaceHole(sl));
                 StartCoroutine(MoveObjToBuryArc(objToBury, catchTarget.transform.position, sl.transform.position, sl));
+                playerAnimator.SetBool("isBury", false);
             }
             else if (sl.buriedObject == null)
             {
+                playerSoundEffects.Shovel_Bury();
+                StartCoroutine(MovePlayerToFaceHole(sl));
                 Destroy(currentSoil);
+                playerAnimator.SetBool("isBury", false);
             }
         }
         // If there is a hole we just dug up that is empty...
         else if (latestSoil != null && latestSoil.buriedObject == null && objToBury != null)
         {
-            Debug.Log("Starting burial!!!");
+            // Play sound effect...
+            playerSoundEffects.Shovel_Bury();
+            StartCoroutine(MovePlayerToFaceHole(latestSoil));
             StartCoroutine(MoveObjToBuryArc(objToBury, catchTarget.transform.position, latestSoil.transform.position, latestSoil));
+            playerAnimator.SetBool("isBury", false);
         }
-    }
+    }  
 
     private IEnumerator WaitForBuryCancel()
     {
@@ -422,5 +438,39 @@ public class Shovel : MonoBehaviour
         p += tt * p2; // t^2 * P2
         
         return p;
+    }
+
+    // Move the player to face the hole when burying
+    public IEnumerator MovePlayerToFaceHole(Soil soil)
+    {
+        Vector3 holePosition = soil.transform.position;
+        Vector3 directionToHole = (holePosition - player.transform.position).normalized;
+        directionToHole.y = 0; // Keep only horizontal direction
+        Quaternion targetRotation = Quaternion.LookRotation(directionToHole);
+
+        float duration = 0.5f; // Time to rotate
+        float elapsedTime = 0f;
+
+        Quaternion initialRotation = player.transform.rotation;
+
+        // Begin bury animation state
+        playerAnimator.SetBool("isBury", true);
+
+        while (elapsedTime < duration)
+        {
+            float t = elapsedTime / duration;
+            player.transform.rotation = Quaternion.Slerp(initialRotation, targetRotation, t);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        // Ensure final rotation is exact
+        player.transform.rotation = targetRotation;
+
+        // Play bury animation
+        //playerAnimator.SetBool("Bury", true);
+        playerAnimator.SetInteger("toolUsed", 4);
+        // End bury animation state
+        playerAnimator.SetBool("isBury", false);
     }
 }
