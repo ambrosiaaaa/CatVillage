@@ -25,11 +25,43 @@ public class Item : MonoBehaviour
     public Vector3 hatScale = Vector3.one; // Scale of the hat when worn
 
     public GameObject owner; // owner of the item (if applicable)
+    public Plant plant; // Plant script attached to the item (if applicable)
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        plant = this.GetComponent<Plant>();
+        // If there is a plant script attached to this object, update the description to include its current growht stage
+        if (plant != null)
+        {
+            switch (plant.currentGrowthStage)
+            {
+                case 0:
+                    itemDescription += "\nGrowth Stage: Seed";
+                    break;
+                case 1:
+                    itemDescription += "\nGrowth Stage: Seedling";
+                    break;
+                case 2:
+                    itemDescription += "\nGrowth Stage: Immature";
+                    break;
+                case 3:
+                    itemDescription += "\nGrowth Stage: Mature";
+                    break;
+                case 4:
+                    itemDescription += "\nGrowth Stage: Flowering";
+                    break;
+                case 5:
+                    itemDescription += "\nGrowth Stage: Fruiting";
+                    break;
+                case 6:
+                    itemDescription += "\nGrowth Stage: Dying";
+                    break;
+                default:
+                    itemDescription += "\nGrowth Stage: (Unknown Stage)";
+                    break;
+            }
+        }
     }
 
     // Update is called once per frame

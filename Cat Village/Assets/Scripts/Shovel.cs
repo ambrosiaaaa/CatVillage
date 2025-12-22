@@ -169,10 +169,9 @@ public class Shovel : MonoBehaviour
                 // If no items to bury, display alternative message
                 buryPopupUI.SetActive(true);
                 buryPopupText.text = "I have no items I can bury...";
+                buryPopupUI.transform.position = latestSoil.transform.position + Vector3.up * 0.75f;
             }
         }
-        // Need to make sure player can't bury shovel.
-        // Maybe only make inventory slots interactable
     }
 
     void GetShovel()
@@ -224,7 +223,7 @@ public class Shovel : MonoBehaviour
             playerSoundEffects.Shovel_Dig();
             // If soil is infront of player, they can dig up the buried object
             // Make the soil infront disappear
-            Debug.Log("Dug up: " + currentSoil);
+            //Debug.Log("Dug up: " + currentSoil);
             //check if soil has buried object or not
             Soil sl = currentSoil.GetComponent<Soil>();
 
@@ -235,7 +234,7 @@ public class Shovel : MonoBehaviour
                 sl.buriedObject.transform.parent = null;
                 sl.buriedObject = null;
                 
-                Debug.Log("Dug up object: " + dugUpObject.name);
+                //Debug.Log("Dug up object: " + dugUpObject.name);
                 
                 // Update soil to show empty hole
                 sl.CheckIfContains();
@@ -259,7 +258,7 @@ public class Shovel : MonoBehaviour
     public void SelectObjectToBury(GameObject obj)
     {
         objToBury = obj;
-        Debug.Log("Selected object to bury: " + objToBury.name);
+        //Debug.Log("Selected object to bury: " + objToBury.name);
     }
 
     public void BuryHole()

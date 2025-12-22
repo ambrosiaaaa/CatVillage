@@ -56,9 +56,11 @@ public class Player_Inventory : MonoBehaviour
     public FishingRod fr;
     public Axe ax;
     public Shovel shov;
+    public Hoe hoe;
 
     [Header("Bury screen UI")]
     public bool isBuryingItem = false;
+    public bool isBuryingSeed = false;
 
     public class InventorySlot
     {
@@ -114,7 +116,7 @@ public class Player_Inventory : MonoBehaviour
             inventoryToolTip.SetActive(false);
         }
         // Hide pickup popup UI on load
-        if (pickupPopupUI != null || isBuryingItem)
+        if (pickupPopupUI != null || isBuryingItem || isBuryingSeed)
         {
             pickupPopupUI.SetActive(false);
         }
@@ -159,6 +161,7 @@ public class Player_Inventory : MonoBehaviour
         fr = this.gameObject.GetComponent<FishingRod>();
         ax = this.gameObject.GetComponent<Axe>();
         shov = this.gameObject.GetComponent<Shovel>();
+        hoe = this.gameObject.GetComponent<Hoe>();
 
         playerAttackRadius = player.gameObject.transform.Find("AttackRadius").gameObject;
         if (playerAttackRadius != null)
@@ -321,6 +324,26 @@ public class Player_Inventory : MonoBehaviour
         {
             ItemCollisionPopup2.SetActive(false);
         }
+    }
+
+    public bool isPlantItem(Item item)
+    {
+        // Check if the given item has a Plant component
+        if (item != null && item.plant != null)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public bool isSeedItem(Item item)
+    {
+        // Check if the given item is a seed (i.e., has a Plant component and is at growth stage 0)
+        if (item != null && item.plant != null && item.plant.currentGrowthStage == 0)
+        {
+            return true;
+        }
+        return false;
     }
 
     // Returns the index of the hovered inventory slot, or -1 if none
@@ -1478,36 +1501,49 @@ public class Player_Inventory : MonoBehaviour
                     fr.runScript = false;
                     ax.runScript = false;
                     shov.runScript = false;
+                    hoe.runScript = false;
                     break;
                 case 2:
                     // Fishing rod
                     fr.runScript = true;
                     ax.runScript = false;
                     shov.runScript = false;
+                    hoe.runScript = false;
                     break;
                 case 3:
                     // Axe
                     fr.runScript = false;
                     ax.runScript = true;
                     shov.runScript = false;
+                    hoe.runScript = false;
                     break;
                 case 4:
                     // Shovel
                     fr.runScript = false;
                     ax.runScript = false;
                     shov.runScript = true;
+                    hoe.runScript = false;
+                    break;
+                case 5:
+                    // Hoe
+                    fr.runScript = false;
+                    ax.runScript = false;
+                    shov.runScript = false;
+                    hoe.runScript = true;
                     break;
                 case 0:
                     // No tool
                     fr.runScript = false;
                     ax.runScript = true;
                     shov.runScript = false;
+                    hoe.runScript = false;
                     break;
                 default:
                     // Disable fishing rod script and clean up
                     fr.runScript = false;
                     ax.runScript = false;
                     shov.runScript = false;
+                    hoe.runScript = false;
                     break;
             }
 
@@ -1538,6 +1574,7 @@ public class Player_Inventory : MonoBehaviour
             fr.runScript = false;
             ax.runScript = false;
             shov.runScript = false;
+            hoe.runScript = false;
         }
     }
 
@@ -1598,6 +1635,13 @@ public class Player_Inventory : MonoBehaviour
                     anim.SetInteger("toolUsed", 4);
                     StartCoroutine(StopMovement(0.8f));
                     shov.DigHole();
+                    break;
+                case 5:
+                    //Debug.Log("Hoe used");
+                    //play hoe animation
+                    anim.SetInteger("toolUsed", 5);
+                    StartCoroutine(StopMovement(1.2f));
+                    hoe.TillSoil();
                     break;
                 default:
                     //Debug.Log("Not a tool.");
@@ -1684,6 +1728,25 @@ public class Player_Inventory : MonoBehaviour
             if (slot.item != null)
             {
                 return true; // Found an occupied slot
+            }
+        }
+        // If all slots are empty, return false
+        return false;
+    }
+    public bool CheckInventoryHasAtleastOneSeed()
+    {
+        // For each inventory slot in the inventory slots...
+        foreach (InventorySlot slot in slots)
+        {
+            // If any slot is occupied, return true
+            if (slot.item != null)
+            {
+                // Check if item has Plant script
+                Plant plantScript = slot.item.GetComponent<Plant>();
+                if (plantScript != null && plantScript.currentGrowthStage == 0)
+                {
+                    return true; // Found an occupied slot with a seed item
+                }
             }
         }
         // If all slots are empty, return false

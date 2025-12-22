@@ -16,14 +16,18 @@ public class CaughtObj : MonoBehaviour
     public Quaternion camRot;
     public GameObject camFocus;
 
-    public GameObject UIMenu; // UI Menu to show when object is caught
+    public GameObject UIMenu; // UI Menu to show when object is caught, shovelling objects
+    public GameObject UIMenu2; // Second UI Menu to show when object is caught, hoeing seeds
     public TextMeshProUGUI objectName; // Text for object name
     public TextMeshProUGUI objectDescription; // Text for object description
+    public TextMeshProUGUI objectName2; // Text for object name
+    public TextMeshProUGUI objectDescription2; // Text for object description
     public Button dropItemButton; // Button to drop the item
     public Button addToInventoryButton; // Button to add item to inventory
     public bool isInventoryFull = false;
 
     public Shovel shovelScript;
+    public Hoe hoeScript;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -32,6 +36,7 @@ public class CaughtObj : MonoBehaviour
         player_Inventory = this.GetComponent<Player_Inventory>();
         anim = player.GetComponent<Animator>();
         shovelScript = this.gameObject.GetComponent<Shovel>();
+        hoeScript = this.gameObject.GetComponent<Hoe>();
         HideMenu();
     }
 
@@ -69,6 +74,7 @@ public class CaughtObj : MonoBehaviour
 
         // Hide bury UI
         shovelScript.buryPopupUI.SetActive(false);
+        hoeScript.burySeedPopupUI.SetActive(false);
 
         // Hide all tools
         player_Inventory.activeToolIndex = 0; // Unarmed
@@ -103,9 +109,23 @@ public class CaughtObj : MonoBehaviour
         {
             addToInventoryButton.interactable = true;
         }
-        ShowMenu();
+
+        // Check which menu to display based on object type
+        if (hoeScript.runScript)
+        {
+            // Hoe menu
+            ShowHoeMenu();
+        }
+        else if (shovelScript.runScript)
+        {
+            // Shovel menu
+            ShowMenu();
+        }
+
         // Get object's info from its Item script
         Item itemScript = obj.GetComponent<Item>();
+
+        Debug.Log("Item script found: " + (itemScript != null));
 
         if (itemScript != null)
         {
@@ -115,6 +135,9 @@ public class CaughtObj : MonoBehaviour
             }
             else
             {
+                Debug.Log("Item name: " + itemScript.itemName);
+                Debug.Log("Item description: " + itemScript.itemDescription);
+
                 UpdateMenuInfo(itemScript.itemName, itemScript.itemDescription, itemScript.isEvil);
             }
         }
@@ -162,9 +185,10 @@ public class CaughtObj : MonoBehaviour
 
     }
 
-    void HideMenu()
+    public void HideMenu()
     {
         UIMenu.SetActive(false);
+        UIMenu2.SetActive(false);
     }
 
     void ShowMenu()
@@ -172,7 +196,12 @@ public class CaughtObj : MonoBehaviour
         UIMenu.SetActive(true);
     }
 
-    public void TossObject()
+    void ShowHoeMenu()
+    {
+        UIMenu2.SetActive(true);
+    }
+
+    public void TossObject() // Shovel
     {
         // Hide bury UI
         shovelScript.buryPopupUI.SetActive(false);
@@ -223,6 +252,7 @@ public class CaughtObj : MonoBehaviour
     {
         // Hide bury UI
         shovelScript.buryPopupUI.SetActive(false);
+        hoeScript.burySeedPopupUI.SetActive(false);
         // Re-enable camera movement
         StartCoroutine(MoveCameraToOldPosition());
         // Hide menu
@@ -246,10 +276,11 @@ public class CaughtObj : MonoBehaviour
     {
         // Hide bury UI
         shovelScript.buryPopupUI.SetActive(false);
+        hoeScript.burySeedPopupUI.SetActive(false);
         Debug.Log("Reburying item...");
         // Re-enable camera movement
         StartCoroutine(MoveCameraToOldPosition());
-        // Hide menu
+        // Hide menus
         HideMenu();
         // Renable player movement
         var movement = player.GetComponent<Player_Movement>();
@@ -270,8 +301,6 @@ public class CaughtObj : MonoBehaviour
         shovelScript.SelectObjectToBury(obj);
 
         shovelScript.BuryHole();
-
-        //!!!!!!!!!!!!!! Probably should add thing for player to requip shovel here
     }
 
     // Rebury in specific hole
@@ -319,12 +348,88 @@ public class CaughtObj : MonoBehaviour
     void UpdateMenuInfo(string name, string description, bool isEvil)
     {
         objectName.text = "Wow! You just picked up a " + name + "!";
+        objectName2.text = "Wow! You just picked up a " + name + "!";
         objectDescription.text = description;
+        objectDescription2.text = description;
         if (isEvil)
         {
             objectName.text += " (Evil Item)";
+            objectName2.text += "(Evil Item)";
         }
     }
+
+    /// Hoe methods ///
+    public void BurySeedButton()
+    {
+        // Hide bury UI
+        hoeScript.burySeedPopupUI.SetActive(false);
+        Debug.Log("Retilling item...");
+        // Re-enable camera movement
+        StartCoroutine(MoveCameraToOldPosition());
+        // Hide menu
+        HideMenu();
+        // Renable player movement
+        var movement = player.GetComponent<Player_Movement>();
+        var sounds = player.GetComponent<Player_SoundEffects>();
+        if (movement != null) movement.enabled = true;
+        if (sounds != null) sounds.enabled = true;
+        anim.SetBool("catch", false);
+        player_Inventory.canSwapTool = true;
+
+        // Rebury object stuff here...
+        // Detach object from hand
+        GameObject obj = handBone.transform.GetChild(0).gameObject;
+
+        Debug.Log("ITem to rebury: " + obj.name);
+        obj.transform.SetParent(null);
+
+        // Rebury in nearest soil using the Shovel script mechanism...
+        hoeScript.SelectSeedToBury(obj);
+
+        hoeScript.BurySeed();
+    }
+
+    public void BurySeedInSpecificHole(TilledSoil ts)
+    {
+        Debug.Log("Reburying item in specific tilled soil...");
+        // Re-enable camera movement
+        StartCoroutine(MoveCameraToOldPosition());
+        // Hide menu
+        HideMenu();
+        // Renable player movement
+        var movement = player.GetComponent<Player_Movement>();
+        var sounds = player.GetComponent<Player_SoundEffects>();
+        if (movement != null) movement.enabled = true;
+        if (sounds != null) sounds.enabled = true;
+        anim.SetBool("catch", false);
+        player_Inventory.canSwapTool = true;
+
+        // Rebury object stuff here...
+        // Detach object from hand
+        if (ts == null)
+        {
+            Debug.LogError("ReburySeedInSpecificHole called with NULL soil reference");
+            return;
+        }
+
+        if (handBone.transform.childCount == 0)
+        {
+            Debug.LogError("ReburySeedInSpecificHole: No object in hand to rebury");
+            return;
+        }
+
+        GameObject obj = handBone.transform.GetChild(0).gameObject;
+        obj.transform.SetParent(null);
+        // Disable collider to avoid immediate physics interactions
+        var col = obj.GetComponent<Collider>();
+        if (col != null) col.enabled = false;
+
+        // Rebury in specified tilled soil
+        hoeScript.SelectSeedToBury(obj);
+        hoeScript.BurySeed();
+    }
+
+    /////// Camera movement coroutines ///////
 
     private IEnumerator MoveCameraToFocus()
     {

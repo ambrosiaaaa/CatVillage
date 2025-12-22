@@ -13,6 +13,7 @@ public class UI_InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExi
     public bool isBottomsSlot = false;
     public Player_Outfitter playerOutfitter; // Reference to the Player_Outfitter script
     public Shovel shovelScript; // Reference to the Shovel script
+    public Hoe hoeScript; // Reference to the Hoe script
     public CaughtObj caughtObjScript; // Reference to the CaughtObj script
 
     void Start()
@@ -24,6 +25,7 @@ public class UI_InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExi
             {
                 playerInventory = gm.GetComponent<Player_Inventory>();
                 shovelScript = gm.GetComponent<Shovel>();
+                hoeScript = gm.GetComponent<Hoe>();
                 caughtObjScript = gm.GetComponent<CaughtObj>();
                 if (playerInventory == null)
                 {
@@ -32,6 +34,10 @@ public class UI_InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExi
                 if(shovelScript == null)
                 {
                     Debug.LogWarning("Shovel component not found on Game Manager.");
+                }
+                if(hoeScript == null)
+                {
+                    Debug.LogWarning("Hoe component not found on Game Manager.");
                 }
             }
             else
@@ -71,8 +77,17 @@ public class UI_InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExi
                 return; // Exit early to avoid showing bury tooltip
             }
         }
+        if (playerInventory.isBuryingSeed)
+        {
+            if (!playerInventory.isSeedItem(playerInventory.slots[slotIndex].item))
+            {
+                playerInventory.HideToolTip();
+                return; // Exit early to avoid showing bury tooltip
+            }
+        }
 
         isHovering = true;
+
         if(playerInventory.isBuryingItem)
         {
             // Show bury tool tip
@@ -96,7 +111,22 @@ public class UI_InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExi
                 }
             }
         }
-        else
+
+        if (playerInventory.isBuryingSeed)
+        {
+            if (!playerInventory.isSeedItem(playerInventory.slots[slotIndex].item))
+            {
+                playerInventory.HideToolTip();
+            }
+            else
+            {
+                playerInventory.ShowBuryToolTip(slotIndex);
+                playerInventory.etoDropLabel.text = "Press B to plant seed";
+                playerInventory.pToPlaceLabel.text = "";
+            }
+        }
+
+        if (!playerInventory.isBuryingSeed && !playerInventory.isBuryingItem)
         {
             // Show normal tool tip
             if (playerInventory != null)
@@ -120,18 +150,18 @@ public class UI_InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExi
     public void OnPointerDown(PointerEventData eventData)
     {
         // If contains an item, pic
-        // Also make sure we are not burying an item!k         
-        if (playerInventory != null && eventData.button == PointerEventData.InputButton.Left && !playerInventory.isBuryingItem)
+        // Also make sure we are not burying an item or seed        
+        if (playerInventory != null && eventData.button == PointerEventData.InputButton.Left && !playerInventory.isBuryingItem && !playerInventory.isBuryingSeed)
         {
             if (playerInventory.tempSlot.item != null && playerInventory.slots[slotIndex].item != null)
             {
-                Debug.Log("swapping item into slot " + slotIndex);
+                //Debug.Log("swapping item into slot " + slotIndex);
                 // If temp slot is full, and player slot is full, swap items
                 playerInventory.Inventory_SwapItems(slotIndex);
             }
             else if (playerInventory.tempSlot.item == null && playerInventory.slots[slotIndex].item != null)
             {
-                Debug.Log("Picking up item from slot " + slotIndex);
+                //Debug.Log("Picking up item from slot " + slotIndex);
                 // If temp slot is empty, pick up item
                 playerInventory.Inventory_PickupItem(slotIndex);
             }
@@ -142,12 +172,12 @@ public class UI_InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExi
                 {
                     if (playerInventory.tempSlot.item.itemType == "Tool")
                     {
-                        Debug.Log("Dropping tool into toolbelt slot " + slotIndex);
+                        //Debug.Log("Dropping tool into toolbelt slot " + slotIndex);
                         playerInventory.Inventory_DropItem(slotIndex);
                     }
                     else
                     {
-                        Debug.Log("Cannot place non-tool item into toolbelt slot " + slotIndex);
+                        //Debug.Log("Cannot place non-tool item into toolbelt slot " + slotIndex);
                         // Optionally, show a UI warning here
                     }
                 }
@@ -155,12 +185,12 @@ public class UI_InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExi
                 {
                     if (playerInventory.tempSlot.item.itemType == "Hat")
                     {
-                        Debug.Log("Dropping hat into hat slot " + slotIndex);
+                        //Debug.Log("Dropping hat into hat slot " + slotIndex);
                         playerInventory.Inventory_DropItem(slotIndex);
                     }
                     else
                     {
-                        Debug.Log("Cannot place non-hat item into hat slot " + slotIndex);
+                        //Debug.Log("Cannot place non-hat item into hat slot " + slotIndex);
                         // Optionally, show a UI warning here
                     }
                 }
@@ -168,12 +198,12 @@ public class UI_InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExi
                 {
                     if (playerInventory.tempSlot.item.itemType == "Top")
                     {
-                        Debug.Log("Dropping top into top slot " + slotIndex);
+                        //Debug.Log("Dropping top into top slot " + slotIndex);
                         playerInventory.Inventory_DropItem(slotIndex);
                     }
                     else
                     {
-                        Debug.Log("Cannot place non-top item into top slot " + slotIndex);
+                        //Debug.Log("Cannot place non-top item into top slot " + slotIndex);
                         // Optionally, show a UI warning here
                     }
                 }
@@ -181,18 +211,18 @@ public class UI_InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExi
                 {
                     if (playerInventory.tempSlot.item.itemType == "Bottoms")
                     {
-                        Debug.Log("Dropping bottoms into bottoms slot " + slotIndex);
+                        //Debug.Log("Dropping bottoms into bottoms slot " + slotIndex);
                         playerInventory.Inventory_DropItem(slotIndex);
                     }
                     else
                     {
-                        Debug.Log("Cannot place non-bottoms item into bottoms slot " + slotIndex);
+                        //Debug.Log("Cannot place non-bottoms item into bottoms slot " + slotIndex);
                         // Optionally, show a UI warning here
                     }
                 }
                 else
                 {
-                    Debug.Log("Dropping item into slot " + slotIndex);
+                    //Debug.Log("Dropping item into slot " + slotIndex);
                     playerInventory.Inventory_DropItem(slotIndex);
                 }
             }
@@ -223,29 +253,78 @@ public class UI_InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExi
                     // If not hovering over active toolbelt slot, allow burying
                     if (Input.GetKeyDown(KeyCode.B))
                     {
-                        // Get item data from this slotIndex
-                        GameObject item = playerInventory.slots[slotIndex].itemObject;
+                        if(playerInventory.isBuryingItem)
+                        {
+                            // Get item data from this slotIndex
+                            GameObject item = playerInventory.slots[slotIndex].itemObject;
 
-                        item.SetActive(true);
+                            item.SetActive(true);
 
-                        shovelScript.SelectObjectToBury(item);
+                            shovelScript.SelectObjectToBury(item);
 
-                        shovelScript.BuryHole();
-                        
-                        // Remove item from inventory
-                        //THIS DOES NOT WORK
-                        playerInventory.RemoveItemForBurial(slotIndex);
-                        
-                        playerInventory.HideInventory(); // Hide inventory UI
-                        shovelScript.buryItemUI.SetActive(false); // Hide bury item UI
-                        
-                        // Unfocus camera
-                        shovelScript.StartCoroutine(caughtObjScript.MoveCameraToOldPosition());
-                        // Allow tool swapping again
-                        playerInventory.canSwapTool = true;
-                        playerInventory.isBuryingItem = false;
+                            shovelScript.BuryHole();
+                            
+                            // Remove item from inventory
+                            playerInventory.RemoveItemForBurial(slotIndex);
+                            
+                            playerInventory.HideInventory(); // Hide inventory UI
+                            shovelScript.buryItemUI.SetActive(false); // Hide bury item UI
+                            
+                            // Unfocus camera
+                            shovelScript.StartCoroutine(caughtObjScript.MoveCameraToOldPosition());
+                            // Allow tool swapping again
+                            playerInventory.canSwapTool = true;
+                            playerInventory.isBuryingItem = false;
+                        }
                     }
                 } 
+            }
+
+            if (playerInventory.isBuryingSeed)
+            {
+                // Check if item is a plant using checker from player inventory
+                bool isPlant = false;
+
+                if (playerInventory.slots[slotIndex].item != null)
+                {
+                    isPlant = playerInventory.slots[slotIndex].item.plant == null ? false : true;
+                }
+
+                if(isPlant)
+                {
+                    if(playerInventory.slots[slotIndex].item.plant.currentGrowthStage != 0)
+                    {
+                        // Not a seed, do not allow burying
+                        return; // Exit early to avoid burying non-seed
+                    }
+
+                    if (Input.GetKeyDown(KeyCode.B))
+                    {
+                        if(playerInventory.isBuryingSeed)
+                        {
+                            // Get item data from this slotIndex
+                            GameObject item = playerInventory.slots[slotIndex].itemObject;
+
+                            item.SetActive(true);
+
+                            hoeScript.SelectSeedToBury(item);
+
+                            hoeScript.BurySeed();
+                            
+                            // Remove item from inventory
+                            playerInventory.RemoveItemForBurial(slotIndex);
+                            
+                            playerInventory.HideInventory(); // Hide inventory UI
+                            hoeScript.burySeedPopupUI.SetActive(false); // Hide bury seed UI
+                            
+                            // Unfocus camera
+                            hoeScript.StartCoroutine(caughtObjScript.MoveCameraToOldPosition());
+                            // Allow tool swapping again
+                            playerInventory.canSwapTool = true;
+                            playerInventory.isBuryingSeed = false;
+                        }
+                    }
+                }
             }
         }
 
