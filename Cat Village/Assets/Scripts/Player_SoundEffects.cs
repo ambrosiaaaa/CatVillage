@@ -30,6 +30,9 @@ public class Player_SoundEffects : MonoBehaviour
     public AudioClip shovel_Dig_Clip;
     public AudioClip shovel_Bury_Clip;
 
+    public AudioClip wateringCan_Pour_Clip;
+    public AudioClip wateringCan_Refill_Clip;
+
     void Start()
     {
         if (playerMovement == null)
@@ -111,6 +114,18 @@ public class Player_SoundEffects : MonoBehaviour
     {
         toolAudioSource.loop = false;
         toolAudioSource.PlayOneShot(shovel_Bury_Clip);
+    }
+
+    public void WateringCan_Pour()
+    {
+        toolAudioSource.loop = false;
+        toolAudioSource.PlayOneShot(wateringCan_Pour_Clip);
+    }
+
+    public void WateringCan_Refill()
+    {
+        toolAudioSource.loop = false;
+        toolAudioSource.PlayOneShot(wateringCan_Refill_Clip);
     }
 
 

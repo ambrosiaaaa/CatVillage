@@ -12,6 +12,8 @@ public class Item : MonoBehaviour
     public bool isTall = false; // If an object is up and down, not lengthwise
     public float positionOffset = 0.0f; // Offset to adjust item position when held
     public float rotationOffset = 0.0f; // Offset to adjust item rotation when held
+    public float rotationOffsetY = 0.0f; // Y-axis Offset to adjust item rotation when held
+    public float rotationOffsetX = 0.0f; // Y-axis Offset to adjust item rotation when held
     public int toolId = 0; // Unique ID for tools, set to 0 for non-tools
     public bool isEvil = false; // Is this an evil item?
 

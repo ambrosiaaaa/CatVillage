@@ -57,6 +57,7 @@ public class Player_Inventory : MonoBehaviour
     public Axe ax;
     public Shovel shov;
     public Hoe hoe;
+    public WateringCan wc;
 
     [Header("Bury screen UI")]
     public bool isBuryingItem = false;
@@ -162,6 +163,7 @@ public class Player_Inventory : MonoBehaviour
         ax = this.gameObject.GetComponent<Axe>();
         shov = this.gameObject.GetComponent<Shovel>();
         hoe = this.gameObject.GetComponent<Hoe>();
+        wc = this.gameObject.GetComponent<WateringCan>();
 
         playerAttackRadius = player.gameObject.transform.Find("AttackRadius").gameObject;
         if (playerAttackRadius != null)
@@ -1454,6 +1456,8 @@ public class Player_Inventory : MonoBehaviour
             float objectLength = 0.0f;
             float posOffset = 0.0f;
             float rotOffset = 0.0f;
+            float rotOffsetY = 0.0f;
+            float rotOffsetX = 0.0f;
             bool isTall = false;
             int toolId = 0;
 
@@ -1465,6 +1469,8 @@ public class Player_Inventory : MonoBehaviour
                 isTall = itemScript.isTall;
                 posOffset = itemScript.positionOffset;
                 rotOffset = itemScript.rotationOffset;
+                rotOffsetX = itemScript.rotationOffsetX;
+                rotOffsetY = itemScript.rotationOffsetY;
                 toolId = itemScript.toolId;
             }
             if (toolRenderer != null)
@@ -1483,7 +1489,7 @@ public class Player_Inventory : MonoBehaviour
 
             // Apply offset based on length of the tool
             activeToolObject.transform.localPosition = Vector3.zero + activeToolOffset * posOffset;
-            activeToolObject.transform.localRotation = Quaternion.Euler(0f, 0f, rotOffset);
+            activeToolObject.transform.localRotation = Quaternion.Euler(rotOffsetX, rotOffsetY, rotOffset);
             activeToolObject.SetActive(true);
         }
 
@@ -1502,6 +1508,7 @@ public class Player_Inventory : MonoBehaviour
                     ax.runScript = false;
                     shov.runScript = false;
                     hoe.runScript = false;
+                    wc.runScript = false;
                     break;
                 case 2:
                     // Fishing rod
@@ -1509,6 +1516,7 @@ public class Player_Inventory : MonoBehaviour
                     ax.runScript = false;
                     shov.runScript = false;
                     hoe.runScript = false;
+                    wc.runScript = false;
                     break;
                 case 3:
                     // Axe
@@ -1516,6 +1524,7 @@ public class Player_Inventory : MonoBehaviour
                     ax.runScript = true;
                     shov.runScript = false;
                     hoe.runScript = false;
+                    wc.runScript = false;
                     break;
                 case 4:
                     // Shovel
@@ -1523,6 +1532,7 @@ public class Player_Inventory : MonoBehaviour
                     ax.runScript = false;
                     shov.runScript = true;
                     hoe.runScript = false;
+                    wc.runScript = false;
                     break;
                 case 5:
                     // Hoe
@@ -1530,6 +1540,15 @@ public class Player_Inventory : MonoBehaviour
                     ax.runScript = false;
                     shov.runScript = false;
                     hoe.runScript = true;
+                    wc.runScript = false;
+                    break;
+                case 6:
+                    // Watering can
+                    fr.runScript = false;
+                    ax.runScript = false;
+                    shov.runScript = false;
+                    hoe.runScript = false;
+                    wc.runScript = true;
                     break;
                 case 0:
                     // No tool
@@ -1537,6 +1556,7 @@ public class Player_Inventory : MonoBehaviour
                     ax.runScript = true;
                     shov.runScript = false;
                     hoe.runScript = false;
+                    wc.runScript = false;
                     break;
                 default:
                     // Disable fishing rod script and clean up
@@ -1544,6 +1564,7 @@ public class Player_Inventory : MonoBehaviour
                     ax.runScript = false;
                     shov.runScript = false;
                     hoe.runScript = false;
+                    wc.runScript = false;
                     break;
             }
 
@@ -1575,6 +1596,7 @@ public class Player_Inventory : MonoBehaviour
             ax.runScript = false;
             shov.runScript = false;
             hoe.runScript = false;
+            wc.runScript = false;
         }
     }
 
@@ -1642,6 +1664,16 @@ public class Player_Inventory : MonoBehaviour
                     anim.SetInteger("toolUsed", 5);
                     StartCoroutine(StopMovement(1.2f));
                     hoe.TillSoil();
+                    break;
+                case 6:
+                    //Debug.Log("Watering can used");
+                    // Play watering can animation
+                    //anim.SetInteger("toolUsed", 6);
+                    if(wc.hasWater)
+                    {
+                        StartCoroutine(StopMovement(1.2f));
+                    }
+                    wc.RefillWaterOrPourWater();
                     break;
                 default:
                     //Debug.Log("Not a tool.");
