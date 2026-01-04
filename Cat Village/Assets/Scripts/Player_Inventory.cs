@@ -1675,6 +1675,11 @@ public class Player_Inventory : MonoBehaviour
                     }
                     wc.RefillWaterOrPourWater();
                     break;
+                case 7:
+                    Debug.Log("Net used!");
+                    anim.SetInteger("toolUsed", 7);
+                    //player.transform.Translate(Vector3.forward * 0.1f);
+                    break;
                 default:
                     //Debug.Log("Not a tool.");
                     anim.SetInteger("toolUsed", 0);

@@ -132,7 +132,7 @@ public class FishingRod : MonoBehaviour
             LayerMask waterLayerMask = 1 << waterLayer;
 
             // Visualize the raycast in the Scene view
-            Debug.DrawRay(rayOrigin, rayDirection * rayDistance, Color.red, 0.5f);
+            //Debug.DrawRay(rayOrigin, rayDirection * rayDistance, Color.red, 0.5f);
 
             RaycastHit hit;
             if (Physics.Raycast(rayOrigin, rayDirection, out hit, rayDistance, waterLayerMask))
