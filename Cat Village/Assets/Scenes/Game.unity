@@ -8490,7 +8490,7 @@ GameObject:
   m_Component:
   - component: {fileID: 238970256}
   - component: {fileID: 238970255}
-  - component: {fileID: 238970258}
+  - component: {fileID: 238970257}
   m_Layer: 0
   m_Name: TestInsect_Ground
   m_TagString: Untagged
@@ -8535,7 +8535,7 @@ Transform:
   - {fileID: 1369005648}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &238970258
+--- !u!114 &238970257
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8544,14 +8544,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 238970254}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2a41d62da5b27e740bed8e504032907c, type: 3}
+  m_Script: {fileID: 11500000, guid: 664f5b29ccd890f4c8a077747b633c5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isGround: 1
-  delayMin: 5
-  delayMax: 20
-  moveSpeed: 0.3
-  isMoving: 0
+  targetGoal: {x: 0, y: 0, z: 0}
+  isWandering: 1
+  hasMoved: 0
+  attempts: 0
+  sc_attempts: 0
+  attemptedTargets: []
+  sc_attempt: {x: 0, y: 0, z: 0}
+  sc_newAttempts: []
+  maxDistanceCanTravel: 10
+  distanceToTarget: 0
+  currentAccumulatedDistance: 0
+  isLongDistanceTraveller: 0
+  isVeryLongDistanceTraveller: 1
+  testSpeed: 0.1
+  lastHitNormal: {x: 0, y: 0, z: 0}
+  lastLateralDirection: {x: 0, y: 0, z: 0}
 --- !u!1 &239793750
 GameObject:
   m_ObjectHideFlags: 0
@@ -12533,7 +12544,7 @@ GameObject:
   - component: {fileID: 453128625}
   - component: {fileID: 453128624}
   - component: {fileID: 453128623}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19207,7 +19218,7 @@ GameObject:
   - component: {fileID: 893223754}
   - component: {fileID: 893223753}
   - component: {fileID: 893223752}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
