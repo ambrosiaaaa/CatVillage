@@ -8549,20 +8549,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetGoal: {x: 0, y: 0, z: 0}
   isWandering: 1
-  hasMoved: 0
-  attempts: 0
-  sc_attempts: 0
-  attemptedTargets: []
-  sc_attempt: {x: 0, y: 0, z: 0}
-  sc_newAttempts: []
-  maxDistanceCanTravel: 10
-  distanceToTarget: 0
+  testSpeed: 0.3
+  rotationSpeed: 2
+  maxDistanceCanTravel: 5
   currentAccumulatedDistance: 0
   isLongDistanceTraveller: 0
   isVeryLongDistanceTraveller: 1
-  testSpeed: 0.1
-  lastHitNormal: {x: 0, y: 0, z: 0}
-  lastLateralDirection: {x: 0, y: 0, z: 0}
+  attempts: 0
+  sc_attempts: 0
+  restChance: 0.2
+  minRestTime: 2
+  maxRestTime: 6
 --- !u!1 &239793750
 GameObject:
   m_ObjectHideFlags: 0

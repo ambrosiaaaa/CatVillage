@@ -8,7 +8,8 @@ public class NPC_MovementAlgorithm : MonoBehaviour
         ModeOne,
         ModeTwo,
         ModeThree,
-        Moving
+        Moving,
+        Resting
     }
 
     [Header("Target")]
@@ -17,6 +18,7 @@ public class NPC_MovementAlgorithm : MonoBehaviour
 
     [Header("Movement")]
     public float testSpeed = 3f;
+    public float rotationSpeed = 5f;
     public float maxDistanceCanTravel;
     public float currentAccumulatedDistance;
 
@@ -27,6 +29,12 @@ public class NPC_MovementAlgorithm : MonoBehaviour
     [Header("Attempts")]
     public int attempts;       // ModeOne attempts
     public int sc_attempts;    // ModeTwo attempts
+
+    [Header("Resting")]
+    public float restChance = 0.2f; //20% chance to rest after reaching target
+    public float minRestTime = 2f; //seconds to rest
+    public float maxRestTime = 6f; //seconds to rest
+    private float restTimer = 0f;
 
     // Saved data from last hit for sideways mode
     private Vector3 lastHitNormal;
@@ -73,6 +81,10 @@ public class NPC_MovementAlgorithm : MonoBehaviour
 
             case NavState.Moving:
                 PerformMovement();
+                break;
+            
+            case NavState.Resting:
+                RunResting();
                 break;
         }
     }
@@ -249,17 +261,28 @@ public class NPC_MovementAlgorithm : MonoBehaviour
         if (moveDir != Vector3.zero)
         {
             Quaternion targetRotation = Quaternion.LookRotation(moveDir);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 5f * Time.deltaTime);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }
 
         // Move NPC
         transform.position = Vector3.MoveTowards(transform.position, currentMoveTarget, testSpeed * Time.deltaTime);
 
-        // Check if reached target
+        // Check if reached target + add resting chance after reaching target
         if (Vector3.Distance(transform.position, currentMoveTarget) < 0.05f)
         {
             Debug.Log("[Movement] Reached target: " + currentMoveTarget);
-            state = NavState.ModeOne; // After reaching, check path to targetGoal again
+
+            // After reaching a waypoint, decide if NPC should rest
+            if (Random.value < restChance)
+            {
+                restTimer = Random.Range(minRestTime, maxRestTime);
+                Debug.Log("[Resting] NPC is resting for " + restTimer + " seconds.");
+                state = NavState.Resting;
+            }
+            else
+            {
+                state = NavState.ModeOne; // Continue normal movement
+            }
         }
     }
 
@@ -271,5 +294,18 @@ public class NPC_MovementAlgorithm : MonoBehaviour
         Debug.LogWarning("[Failure] NPC failed to route. Generating new targetGoal...");
         // Reset attempts and generate a new wandering target
         state = NavState.Idle;
+    }
+
+    // --------------------------
+    //      Resting
+    // --------------------------
+    void RunResting()
+    {
+        restTimer -= Time.deltaTime;
+        if (restTimer <= 0f)
+        {
+            Debug.Log("[Resting] Finished resting. Resuming wandering...");
+            state = NavState.Idle;   // Go back to the wandering cycle
+        }
     }
 }
