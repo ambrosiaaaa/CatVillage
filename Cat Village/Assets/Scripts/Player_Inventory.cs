@@ -58,6 +58,7 @@ public class Player_Inventory : MonoBehaviour
     public Shovel shov;
     public Hoe hoe;
     public WateringCan wc;
+    public Net net;
 
     [Header("Bury screen UI")]
     public bool isBuryingItem = false;
@@ -164,6 +165,7 @@ public class Player_Inventory : MonoBehaviour
         shov = this.gameObject.GetComponent<Shovel>();
         hoe = this.gameObject.GetComponent<Hoe>();
         wc = this.gameObject.GetComponent<WateringCan>();
+        net = this.gameObject.GetComponent<Net>();
 
         playerAttackRadius = player.gameObject.transform.Find("AttackRadius").gameObject;
         if (playerAttackRadius != null)
@@ -650,7 +652,7 @@ public class Player_Inventory : MonoBehaviour
                     iconColor.a = 1f;
                     slot.icon.color = iconColor;
                 }
-                //Debug.Log($"Added item: {slot.item.itemName} to inventory slot: {slot.slot.name}");
+                Debug.Log($"Added item: {slot.item.itemName} to inventory slot: {slot.slot.name}");
 
                 // Make item not active in the world, and set currentItem to null
                 item.gameObject.SetActive(false); // Deactivate the item in the world
@@ -1509,6 +1511,7 @@ public class Player_Inventory : MonoBehaviour
                     shov.runScript = false;
                     hoe.runScript = false;
                     wc.runScript = false;
+                    net.runScript = false;
                     break;
                 case 2:
                     // Fishing rod
@@ -1517,6 +1520,7 @@ public class Player_Inventory : MonoBehaviour
                     shov.runScript = false;
                     hoe.runScript = false;
                     wc.runScript = false;
+                    net.runScript = false;
                     break;
                 case 3:
                     // Axe
@@ -1525,6 +1529,7 @@ public class Player_Inventory : MonoBehaviour
                     shov.runScript = false;
                     hoe.runScript = false;
                     wc.runScript = false;
+                    net.runScript = false;
                     break;
                 case 4:
                     // Shovel
@@ -1533,6 +1538,7 @@ public class Player_Inventory : MonoBehaviour
                     shov.runScript = true;
                     hoe.runScript = false;
                     wc.runScript = false;
+                    net.runScript = false;
                     break;
                 case 5:
                     // Hoe
@@ -1541,6 +1547,7 @@ public class Player_Inventory : MonoBehaviour
                     shov.runScript = false;
                     hoe.runScript = true;
                     wc.runScript = false;
+                    net.runScript = false;
                     break;
                 case 6:
                     // Watering can
@@ -1549,6 +1556,16 @@ public class Player_Inventory : MonoBehaviour
                     shov.runScript = false;
                     hoe.runScript = false;
                     wc.runScript = true;
+                    net.runScript = false;
+                    break;
+                case 7:
+                    // Net
+                    fr.runScript = false;
+                    ax.runScript = false;
+                    shov.runScript = false;
+                    hoe.runScript = false;
+                    wc.runScript = false;
+                    net.runScript = true;
                     break;
                 case 0:
                     // No tool
@@ -1557,6 +1574,7 @@ public class Player_Inventory : MonoBehaviour
                     shov.runScript = false;
                     hoe.runScript = false;
                     wc.runScript = false;
+                    net.runScript = false;
                     break;
                 default:
                     // Disable fishing rod script and clean up
@@ -1597,6 +1615,7 @@ public class Player_Inventory : MonoBehaviour
             shov.runScript = false;
             hoe.runScript = false;
             wc.runScript = false;
+            net.runScript = false;
         }
     }
 
@@ -1678,7 +1697,7 @@ public class Player_Inventory : MonoBehaviour
                 case 7:
                     Debug.Log("Net used!");
                     anim.SetInteger("toolUsed", 7);
-                    //player.transform.Translate(Vector3.forward * 0.1f);
+                    net.CastNet();
                     break;
                 default:
                     //Debug.Log("Not a tool.");

@@ -9,6 +9,7 @@ TagManager:
   - Tree
   - Soil
   - TilledSoil
+  - Insect
   layers:
   - Default
   - TransparentFX
