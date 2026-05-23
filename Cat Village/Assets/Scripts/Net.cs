@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using TMPro;
 
 public class Net : MonoBehaviour
 {
@@ -14,6 +15,14 @@ public class Net : MonoBehaviour
     public Player_SoundEffects playerSoundEffects;
     public bool hasCasted = false;
     public Player_Inventory pi;
+    public GameObject catchUIMenu;
+
+    public GameObject catchUI_objectNameTag;
+    public GameObject catchUI_objectDescTag;
+    public GameObject catchUI_keepButton;
+    public GameObject catchUI_tossButton;
+
+    public Item caughtBug; // Store the caught bug item for inventory management
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -23,6 +32,12 @@ public class Net : MonoBehaviour
         anim = player != null ? player.GetComponent<Animator>() : null;
         playerSoundEffects = player != null ? player.GetComponent<Player_SoundEffects>() : null;
         pi = GameObject.Find("Game Manager").GetComponent<Player_Inventory>();
+        catchUIMenu = GameObject.Find("DISPLAYMENUS_bug");
+        catchUI_objectNameTag = catchUIMenu.transform.Find("ObjectName").gameObject;
+        catchUI_objectDescTag = catchUIMenu.transform.Find("ObjectDesc").gameObject;
+        catchUI_keepButton = catchUIMenu.transform.Find("AddToInventoryButton").gameObject;
+        catchUI_tossButton = catchUIMenu.transform.Find("DropItemButton").gameObject;
+        catchUIMenu.SetActive(false);
     }
 
     // Update is called once per frame
@@ -92,10 +107,10 @@ public class Net : MonoBehaviour
                     {
                         // Display catch animation
                         DisplayCatch(bugHit);
-                        /*
-                        Item bugitemScript = bugHit.transform.GetChild(0).GetComponent<Item>();
+                        caughtBug = bugHit.GetComponent<Item>();
+                        ManageCatchUI(caughtBug.itemName, caughtBug.itemDescription);
                         // Add bug to inventory
-                        if (bugitemScript != null)
+                        /*if (bugitemScript != null)
                         {
                             Player_Inventory playerInventory = GameObject.Find("Game Manager").GetComponent<Player_Inventory>();
                             playerInventory.AddItemToInventory(bugitemScript);
@@ -141,5 +156,47 @@ public class Net : MonoBehaviour
         {
             netRenderer.enabled = true;
         }
+
+        player.GetComponent<Player_Movement>().enabled = true;
+    }
+
+    public void ManageCatchUI(string bugname, string bugdesc)
+    {
+        // Method to manage the catch UI, called at the end of the catch animation
+        catchUIMenu.SetActive(true);
+
+        // Edit name of tag to match the bug caught, get the name from the bug's item script
+        // Get TMPRO components of the name and description tags
+        catchUI_objectNameTag.GetComponent<TextMeshProUGUI>().text = "Wow! You just caught a " + bugname + "!"; // Placeholder, change to bug name
+        catchUI_objectDescTag.GetComponent<TextMeshProUGUI>().text = bugdesc; // Placeholder, change to bug name
+
+        // Two buttons do either thing depending on if clicked...
+
+    }
+
+    public void AddToInventory()
+    {
+        Player_Inventory playerInventory = GameObject.Find("Game Manager").GetComponent<Player_Inventory>();
+        playerInventory.AddItemToInventory(caughtBug);
+        HideCatch();
+        caughtBug = null;
+        catchUIMenu.SetActive(false);
+    }
+
+    public void DropBug()
+    {
+        // Release the bug back into the world, then hide the catch UI and re-enable player movement
+        HideCatch();
+
+        caughtBug.transform.position = player.transform.position + (Vector3.forward * -1.0f); // Drop the bug in front of the player, hopefully it continues its movement and doesn't just fall to the ground...
+        NPC_MovementAlgorithm bugAI = caughtBug.transform.parent.GetComponent<NPC_MovementAlgorithm>();
+        if (bugAI != null)
+        {
+            bugAI.enabled = true;
+            bugAI.releasing = true;
+            bugAI.ReleasedBug();
+        }
+        caughtBug = null;
+        catchUIMenu.SetActive(false);
     }
 }

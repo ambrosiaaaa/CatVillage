@@ -15,6 +15,7 @@ public class NPC_MovementAlgorithm : MonoBehaviour
     [Header("Target")]
     public Vector3 targetGoal;
     public bool isWandering = true;
+    public bool releasing = false;
 
     [Header("Movement")]
     public float testSpeed = 3f;
@@ -53,39 +54,42 @@ public class NPC_MovementAlgorithm : MonoBehaviour
 
     void Update()
     {
-        switch (state)
+        if (!releasing)
         {
-            case NavState.Idle:
-                // NPC is waiting to start wandering
-                if (isWandering)
-                {
-                    Debug.Log("[State] Idle: Starting wandering.");
-                    BeginNavigation_Wandering();
-                }
-                break;
+            switch (state)
+            {
+                case NavState.Idle:
+                    // NPC is waiting to start wandering
+                    if (isWandering)
+                    {
+                        Debug.Log("[State] Idle: Starting wandering.");
+                        BeginNavigation_Wandering();
+                    }
+                    break;
 
-            case NavState.ModeOne:
-                Debug.Log("[State] ModeOne: Attempting straight-line path to target.");
-                RunModeOne();
-                break;
+                case NavState.ModeOne:
+                    Debug.Log("[State] ModeOne: Attempting straight-line path to target.");
+                    RunModeOne();
+                    break;
 
-            case NavState.ModeTwo:
-                Debug.Log("[State] ModeTwo: Sideways checking for obstacles.");
-                RunModeTwo();
-                break;
+                case NavState.ModeTwo:
+                    Debug.Log("[State] ModeTwo: Sideways checking for obstacles.");
+                    RunModeTwo();
+                    break;
 
-            case NavState.ModeThree:
-                Debug.Log("[State] ModeThree: Checking for building walls/doors.");
-                RunModeThree();
-                break;
+                case NavState.ModeThree:
+                    Debug.Log("[State] ModeThree: Checking for building walls/doors.");
+                    RunModeThree();
+                    break;
 
-            case NavState.Moving:
-                PerformMovement();
-                break;
-            
-            case NavState.Resting:
-                RunResting();
-                break;
+                case NavState.Moving:
+                    PerformMovement();
+                    break;
+
+                case NavState.Resting:
+                    RunResting();
+                    break;
+            }
         }
     }
 
@@ -307,5 +311,73 @@ public class NPC_MovementAlgorithm : MonoBehaviour
             Debug.Log("[Resting] Finished resting. Resuming wandering...");
             state = NavState.Idle;   // Go back to the wandering cycle
         }
+    }
+
+    public void ReleasedBug()
+    {
+        Debug.Log("[Released] Insect released! Setting up scurry path...");
+
+        // 1. Mark that we are releasing so Update completely ignores normal AI states
+        releasing = true;
+
+        // 2. Pick a spot 3 meters straight ahead of where the bug is currently looking
+        float scurryDistance = 3.0f;
+        targetGoal = transform.position + (transform.forward * scurryDistance);
+
+        // 3. Hand everything off to the Coroutine to handle both straight movement and fading
+        StartCoroutine(FadeAndDestroyRoutine());
+    }
+
+    private System.Collections.IEnumerator FadeAndDestroyRoutine()
+    {
+        Vector3 startPosition = transform.position;
+
+        // Total duration of the scurry + fade behavior
+        float totalDuration = 2.5f;
+        float currentTime = 0f;
+
+        // Try to safely find any active renderer on children (MeshRenderer or SkinnedMeshRenderer)
+        Renderer bugRenderer = GetComponentInChildren<Renderer>();
+        Material bugMat = null;
+        Color originalColor = Color.white;
+
+        if (bugRenderer != null)
+        {
+            // Note: .material automatically creates a local instance for modifying properties
+            bugMat = bugRenderer.material;
+            originalColor = bugMat.color;
+        }
+        else
+        {
+            Debug.LogWarning("[Released] No Renderer found in children! Bug will move but won't fade.");
+        }
+
+        // Loop handles BOTH linear movement and alpha fading over time
+        while (currentTime < totalDuration)
+        {
+            currentTime += Time.deltaTime;
+            float normalizedTime = currentTime / totalDuration; // Value from 0.0 to 1.0
+
+            // --- 1. MOVEMENT (LERP) ---
+            // Bug smoothly moves from start position to targetGoal over the totalDuration
+            transform.position = Vector3.Lerp(startPosition, targetGoal, normalizedTime);
+
+            // --- 2. FADE LOGIC ---
+            // Let the bug run at full opacity for the first 1.0 second, then fade over the remaining 1.5 seconds
+            if (bugMat != null && currentTime > 1.0f)
+            {
+                // Calculate fade progress specifically for the last 1.5 seconds
+                float fadeProgress = (currentTime - 1.0f) / 1.5f;
+                float alpha = Mathf.Lerp(1f, 0f, fadeProgress);
+
+                // Update material color with the new alpha channel value
+                bugMat.color = new Color(originalColor.r, originalColor.g, originalColor.b, alpha);
+            }
+
+            yield return null;
+        }
+
+        Debug.Log("[Released] Scurry and fade sequence complete. Destroying GameObject.");
+        Destroy(gameObject);
     }
 }

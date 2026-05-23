@@ -350,6 +350,16 @@ public class Player_Inventory : MonoBehaviour
         return false;
     }
 
+    public bool isBugItem(Item item)
+    {
+        // Check if the given item is tagged "Bug"
+        if (item != null && item.itemType == "Bug")
+        {
+            return true;
+        }
+        return false;
+    }
+
     // Returns the index of the hovered inventory slot, or -1 if none
     private int GetHoveredInventorySlot()
     {
@@ -692,6 +702,8 @@ public class Player_Inventory : MonoBehaviour
     public void RemoveItemFromInventory(int slotIndex, float rotationY = 0f)
     {
         InventorySlot slot = slots[slotIndex];
+        
+        Debug.Log("Attempting to place item from slot: " + slot.slot.name);
         var movement = player != null ? player.GetComponent<Player_Movement>() : null;
         if (movement != null && movement.isColliding)
         {
@@ -705,6 +717,14 @@ public class Player_Inventory : MonoBehaviour
             // Only place if not colliding with another object
             if (!IsPlacementColliding(slot, rotationY))
             {
+                // Check if item is a bug
+                if(isBugItem(slot.item))
+                {
+                    PlaceItemOnGround(slot, rotationY);
+                    // Run bug coroutine
+                    StartCoroutine(ReleaseBugAndClearSlotRoutine(slot));
+                }
+                Debug.Log($" Placing item: {slot.item.itemName} from inventory slot: {slot.slot.name} onto the ground.");
                 PlaceItemOnGround(slot, rotationY);
                 slot.item = null;
                 slot.itemObject = null;
@@ -721,6 +741,29 @@ public class Player_Inventory : MonoBehaviour
             Debug.LogWarning("No item to remove in slot: " + slot.slot.name);
         }
     }
+
+    private System.Collections.IEnumerator ReleaseBugAndClearSlotRoutine(InventorySlot slot)
+    {
+
+        // 1. Get the bug's AI component
+        NPC_MovementAlgorithm ai = slot.itemObject.transform.parent.GetComponent<NPC_MovementAlgorithm>();
+    
+        if (ai != null)
+        {
+            ai.releasing = true;
+            ai.ReleasedBug();
+        }
+
+        // 2. Wait for 2.5 seconds (the exact duration of your bug's scurry/fade loop)
+        yield return new WaitForSeconds(2.5f);
+
+        // 3. Clear the inventory slot data after the wait is over
+        slot.item = null;
+        slot.itemObject = null;
+        ClearSlotIcon(slot);
+    
+        Debug.Log("[Inventory] Slot successfully cleared after bug release finished!");
+}
 
     private bool IsPlacementColliding(InventorySlot slot, float rotationY)
     {

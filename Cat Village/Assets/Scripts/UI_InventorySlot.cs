@@ -53,6 +53,7 @@ public class UI_InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExi
         isHovering = false;
         if (playerInventory != null)
         {
+            // Only clear it if we are the slot currently marked as hovered
             playerInventory.HideToolTip();
         }
     }
